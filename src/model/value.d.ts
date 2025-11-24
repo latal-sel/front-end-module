@@ -1,6 +1,6 @@
 import type { Origin } from "./origin";
 
-export interface Value {
+export class Value {
     timestamp: Date;
     origin: Origin;
     name: string;

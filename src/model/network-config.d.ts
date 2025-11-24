@@ -1,4 +1,4 @@
-export interface NetworkConfig {
+export class NetworkConfig {
     ipAddress: string;
     subnetMask: string;
     gateway: string;
