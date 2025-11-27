@@ -1,0 +1,36 @@
+.banner {
+    width: 100%;
+    height: 3vw;
+
+    /* Text styles */
+    font-family: Arial, sans-serif;
+    font-size: 1.2vw;
+    color: black;
+
+    /* Border and layout */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-left: 1vw;
+    padding-right: 1vw;
+
+    border: 1px solid black;
+}
+
+.banner > .banner-name {
+    width: 100%;
+}
+
+.banner > .banner-value {
+    padding-right: 0.5vw;
+}
+
+.banner > .banner-unit {
+    padding-right: 1vw;
+}
+
+.banner > img {
+    height: 2vw;
+    width: auto;
+    padding-right: 0.5vw;
+}

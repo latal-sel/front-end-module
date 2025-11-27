@@ -1,19 +1,15 @@
-import React, { useState } from "react";
-import { fetchValues, type Value } from "../api/values";
+import React from "react";
+
+import BannerComponent from "../components/banner.component";
+
+import "../styles/home.css";
 
 const Home: React.FC = () => {
-  const [message, setMessage] = useState("Bonjour depuis Home!");
 
   return (
-    <div>
-      <h1>Home Page</h1>
-      <p>{message}</p>
-      <button onClick={async () => {
-        const values: Value[] = await fetchValues();
-        setMessage(`Fetched ${values.length} values from API.`);
-      }}>
-        Envoyer une requête API
-      </button>
+    <div className="banner-div">
+      <BannerComponent type="warning"/>
+      <BannerComponent type="disconnected"/>
     </div>
   );
 };
