@@ -17,45 +17,45 @@ export default function networkConfigComponent() {
                         <label>Configuration IP M1</label>
                         <div>
                             <span>Adresse IP</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                         <div>
                             <span>Port</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                         <div>
                             <span>Passerelle</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                     </div>
                     <div className="network-config-item">
                         <label>Configuration IP M3</label>
                         <div>
                             <span>Adresse IP</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                         <div>
                             <span>Port</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                         <div>
                             <span>Passerelle</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                     </div>
                     <div className="network-config-item">
                         <label>Configuration IP Automate</label>
                         <div>
                             <span>Adresse IP</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                         <div>
                             <span>Port</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                         <div>
                             <span>Passerelle</span>
-                            <input type="text" placeholder="hey"/>
+                            <input type="text" placeholder="Ecrire ici..."/>
                         </div>
                     </div>
                 </div>
