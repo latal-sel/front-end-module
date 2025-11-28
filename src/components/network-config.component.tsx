@@ -3,14 +3,17 @@ import cross from "../assets/cross.svg";
 
 import "../styles/component/network-config.css"
 
+interface networkConfigProps { 
+    onConfigClick?: () => void;
+}
 
-export default function networkConfigComponent() {
+export default function networkConfigComponent({ onConfigClick }: networkConfigProps) {
     return (
         <div className="network-config">
             <div>
                 <div className="network-config-title">
                     <h2>Configuration réseau</h2>
-                    <img src={cross} alt="" />
+                    <img src={cross} onClick={onConfigClick} alt="Close" />
                 </div>
                 <div className="network-config-content">
                     <div className="network-config-item">
