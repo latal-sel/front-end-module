@@ -13,4 +13,21 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      // Proxy API requests to the backend during development to avoid CORS
+      // Use env var VITE_API_BASE_URL if set, otherwise fallback to http://localhost:3000
+      '/api': {
+        target: process.env.VITE_API_BASE_URL || 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
+      // If your frontend calls /network-config directly (as in this project), proxy it too
+      '/network-config': {
+        target: process.env.VITE_API_BASE_URL || 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  }
 })
