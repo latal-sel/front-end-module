@@ -6,7 +6,7 @@ interface headerProps {
 
 const navigation = [
     { name: 'Configuration réseau', href: '/' },
-    { name: 'Historique', href: '/' },
+    { name: 'Historique', href: '/history' },
     { name: 'Redémarrer', href: '/' },
 ];
 
