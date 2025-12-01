@@ -1,5 +1,5 @@
 export class NetworkConfig {
     ipAddress: string;
-    subnetMask: string;
+    port: string;
     gateway: string;
 }
