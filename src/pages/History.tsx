@@ -1,60 +1,44 @@
 import Header from "../components/header.component";
 import FilterComponent from "../components/filter.component";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import cross from "../assets/cross.svg"
-
-const historyData = [
-    {
-        date: "2024-06-01 10:00:00",
-        titre: "Connexion établie",
-        description: "La connexion au serveur a été établie avec succès.",
-        origine: "Système",
-        etat: "Succès"
-    },
-    {
-        date: "2024-06-01 10:05:00",
-        titre: "Erreur de communication",
-        description: "Une erreur de communication est survenue avec le module M1.",
-        origine: "Module M1",
-        etat: "Échec"
-    },
-    {
-        date: "2024-06-01 10:10:00",
-        titre: "Redémarrage du système",
-        description: "Le système a été redémarré par l'utilisateur.",
-        origine: "Utilisateur",
-        etat: "Succès"
-    }
-];
+import type { Event } from "../model/event";
+import { fetchEvents } from "../api/events";
 
 const filters = [
     "Date",
-    "Titre",
-    "Description",
+    "Message",
     "Origine",
-    "Etat"
+    "Etat",
+    "Type"
 ];
 
 export default function History() {
   const [visibleFilters, setVisibleFilters] = useState<string | null>(null);
   const [filterValues, setFilterValues] = useState<{ [key: string]: string }>({});  
+  const [events, setEvents] = useState<Event[]>([]);
 
-  const toggleFilter = (filterName: string) => {
+  useEffect(() => {
+    fetchEvents().then((data) => setEvents(data));
+  }, []);
+
+  function toggleFilter(filterName: string) {
     setVisibleFilters((prevFilter) =>
       prevFilter === filterName ? null : filterName
     );
   };
 
-  const handleFilterChange = (filterName: string, value: string) => {
+  function handleFilterChange(filterName: string, value: string) {
     setFilterValues((prevValues) => ({
       ...prevValues,
       [filterName]: value,
     }));
   }
 
-  const filteredData = historyData.filter((entry) => {
+  const filteredData: Event[] = events.filter((entry) => {
     return Object.entries(filterValues).every(([key, value]) => {
-      if (!value) return true;
+        if (!value) return true;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const entryValue = (entry as any)[key.toLowerCase()];
         return entryValue.toLowerCase().includes(value.toLowerCase());
     });
@@ -84,20 +68,20 @@ export default function History() {
         <thead className="bg-yellow-300"> 
           <tr>
             <th className="border border-gray-300 px-4 py-2">Date</th>
-            <th className="border border-gray-300 px-4 py-2">Titre</th>
-            <th className="border border-gray-300 px-4 py-2">Description</th>
+            <th className="border border-gray-300 px-4 py-2">Message</th>
             <th className="border border-gray-300 px-4 py-2">Origine</th>
             <th className="border border-gray-300 px-4 py-2">Etat</th>
+            <th className="border border-gray-300 px-4 py-2">Type</th>
           </tr>
         </thead>
         <tbody>
           {filteredData.map((entry, index) => (
             <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}>
-              <td className="border border-gray-300 px-4 py-2">{entry.date}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.titre}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.description}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.origine}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.etat}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.timestamp}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.message}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.origin}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.state}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.eventType}</td>
             </tr>
           ))}
         </tbody>
