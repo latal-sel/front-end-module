@@ -2,15 +2,11 @@ import logo from "../assets/SEL.png";
 
 interface headerProps { 
     onConfigClick?: () => void;
+    onRestartClick?: () => void;
 }
 
-const navigation = [
-    { name: 'Configuration réseau', href: '/' },
-    { name: 'Historique', href: '/history' },
-    { name: 'Redémarrer', href: '/' },
-];
 
-const Header: React.FC<headerProps> = ({ onConfigClick }) => {
+const Header: React.FC<headerProps> = ({ onConfigClick, onRestartClick }) => {
     return (
         <header className="header shadow-md h-16">
             <div className="header-container mx-auto flex justify-between items-center h-full px-4 sm:px-6 lg:px-8">
@@ -18,16 +14,9 @@ const Header: React.FC<headerProps> = ({ onConfigClick }) => {
                     <img src={logo} alt="Logo" className="h-8 w-18" />
                 </div>
                 <nav className="nav space-x-4">
-                    {navigation.map((item) => (
-                        <a
-                            key={item.name}
-                            href={item.name === 'Configuration réseau' ? '#' : item.href}
-                            className="bg-gray-200 p-2 rounded-md"
-                            onClick={item.name === 'Configuration réseau' ? onConfigClick : undefined}
-                        >
-                            {item.name}
-                        </a>
-                    ))}
+                    <a href="#" className="bg-gray-200 p-2 rounded-md" onClick={onConfigClick}>Configuration réseau</a>
+                    <a href="/history" className="bg-gray-200 p-2 rounded-md">Historique</a>
+                    <a href="#" className="bg-gray-200 p-2 rounded-md" onClick={onRestartClick}>Redémarrer</a>
                 </nav>
             </div>
         </header>
