@@ -13,4 +13,7 @@ export default defineConfig({
     }),
     tailwindcss(),
   ],
+  optimizeDeps: {
+    exclude: ['js-big-decimal']
+  }
 })

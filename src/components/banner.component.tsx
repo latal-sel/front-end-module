@@ -41,7 +41,7 @@ function getIconPath(type: string): string {
 
 
 
-export default function BannerComponent({type = "default"}: {type?: "default" | "disconnected" | "warning"}) {
+export default function BannerComponent({type = "default"}: {value: Value, type?: "default" | "disconnected" | "warning"}) {
     return (
         <div className="banner" style={{backgroundColor: getBackgroundColor(type)}}>
             <div className="banner-name">
