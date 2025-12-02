@@ -11,8 +11,6 @@ interface networkConfigProps {
     onConfigClick?: () => void;
 }
 
-
-
 export default function NetworkConfigComponent({ onConfigClick }: networkConfigProps) {
     const [allNetworkConfig, setAllNetworkConfig] = React.useState<AllNetworkConfig>({
         m1: { ipAddress: "", port: "", gateway: "" },
