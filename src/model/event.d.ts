@@ -3,9 +3,9 @@ import type { Origin } from "./origin";
 import type { State } from "./state";
 
 export class Event {
-    timestamp: Date;
-    origin: Origin;
+    timestamp: string;
     message: string;
+    origin: Origin;
     eventType: EventType;
     state: State;
 }
