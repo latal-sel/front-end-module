@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import BannerComponent from "../components/banner.component";
 import Header from "../components/header.component";
-import RestartComponent from "../components/restart.component";
-import NetworkConfigComponent from "../components/network-config.component";
 
 import { fetchValues } from "../api/values";
 import { Value } from "../model/value.d";
@@ -13,8 +11,6 @@ import { websocketClient } from "../utils/websocket";
 
 const Home: React.FC = () => {
   const [values, setValues] = useState<Value[]>([]);
-  const [showNetworkConfig, setShowNetworkConfig] = React.useState(false);
-  const [showRestart, setShowRestart] = React.useState(false);
 
   useEffect(() => {
     const getData = async () => {
@@ -43,14 +39,12 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <Header onConfigClick={toggleNetworkConfig} onRestartClick={toggleRestart} />
+      <Header />
       <div className="banner-div">
         {values.map((value, index) => (
           <BannerComponent key={index} value={value} />
         ))}
       </div>
-      {showNetworkConfig && <NetworkConfigComponent onConfigClick={toggleNetworkConfig} />}
-      {showRestart && <RestartComponent onRestartClick={toggleRestart} />}
     </>
   );
 };
