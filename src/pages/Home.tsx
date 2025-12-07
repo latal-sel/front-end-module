@@ -7,6 +7,7 @@ import { fetchValues } from "../api/values";
 import { Value } from "../model/value.d";
 
 import "../styles/home.css";
+import { websocketClient } from "../utils/websocket";
 
 const Home: React.FC = () => {
   const [values, setValues] = useState<Value[]>([]);
@@ -18,6 +19,23 @@ const Home: React.FC = () => {
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    console.log("Setting up WebSocket connection");
+    websocketClient.connect();
+
+    websocketClient.on((data: string) => {
+      console.log("Received data via WebSocket:", data);
+    });
+  });
+
+  const toggleNetworkConfig = () => {
+    setShowNetworkConfig(!showNetworkConfig);
+  };
+
+  const toggleRestart = () => {
+    setShowRestart(!showRestart);
+  };
 
   return (
     <>
