@@ -11,8 +11,6 @@ import { websocketClient } from "../utils/websocket";
 const Home: React.FC = () => {
   const [valuesM1, setValuesM1] = useState<Value[]>([]);
   const [valuesM3, setValuesM3] = useState<Value[]>([]);
-  const [showNetworkConfig, setShowNetworkConfig] = React.useState(false);
-  const [showRestart, setShowRestart] = React.useState(false);
 
   // If name exists in array, update value, else insert
   const insertValueIntoArray = (ValueToInsert: Value, ValueArray: Value[], setValues: React.Dispatch<React.SetStateAction<Value[]>>) => {
@@ -46,27 +44,9 @@ const Home: React.FC = () => {
     });
   }, [valuesM1, valuesM3]);
 
-
-  useEffect(() => {
-    console.log("Setting up WebSocket connection");
-    websocketClient.connect();
-
-    websocketClient.on((data: string) => {
-      console.log("Received data via WebSocket:", data);
-    });
-  });
-
-  const toggleNetworkConfig = () => {
-    setShowNetworkConfig(!showNetworkConfig);
-  };
-
-  const toggleRestart = () => {
-    setShowRestart(!showRestart);
-  };
-
   return (
     <>
-      <Header onConfigClick={toggleNetworkConfig} onRestartClick={toggleRestart} />
+      <Header/>
       <div className="home-body">
         <div className="banner-div">
           <span>M1</span>
@@ -81,9 +61,6 @@ const Home: React.FC = () => {
           ))}
         </div>
       </div>
-
-      {showNetworkConfig && <NetworkConfigComponent onConfigClick={toggleNetworkConfig} />}
-      {showRestart && <RestartComponent onRestartClick={toggleRestart} />}
     </>
   );
 };
