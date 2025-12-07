@@ -47,6 +47,23 @@ const Home: React.FC = () => {
   }, [valuesM1, valuesM3]);
 
 
+  useEffect(() => {
+    console.log("Setting up WebSocket connection");
+    websocketClient.connect();
+
+    websocketClient.on((data: string) => {
+      console.log("Received data via WebSocket:", data);
+    });
+  });
+
+  const toggleNetworkConfig = () => {
+    setShowNetworkConfig(!showNetworkConfig);
+  };
+
+  const toggleRestart = () => {
+    setShowRestart(!showRestart);
+  };
+
   return (
     <>
       <Header onConfigClick={toggleNetworkConfig} onRestartClick={toggleRestart} />
