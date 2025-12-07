@@ -1,20 +1,9 @@
-import { Origin } from "../model/origin"
 import type { Value } from "../model/value"
-
 
 import warningIcon from "../assets/warning.svg";
 import disconnectedIcon from "../assets/disconnect.svg";
 
 import "../styles/component/banner.css"
-
-const value: Value = {
-        timestamp: new Date(),
-        origin: Origin.IHM,
-        name: "Temperature",
-        value: 22.5,
-        unit: "°C",
-        isSimulated: false
-    }
 
 function getBackgroundColor(type: string): string {
     switch(type) {
@@ -38,17 +27,14 @@ function getIconPath(type: string): string {
     return "";
 }
 
-
-
-
-export default function BannerComponent({type = "default"}: {value: Value, type?: "default" | "disconnected" | "warning"}) {
+export default function BannerComponent({value}: {value: Value}) {
     return (
-        <div className="banner" style={{backgroundColor: getBackgroundColor(type)}}>
+        <div className="banner" style={{backgroundColor: getBackgroundColor(value.type)}}>
             <div className="banner-name">
                 {value.name}
             </div>
-            {getIconPath(type) && 
-                <img src={getIconPath(type)} alt={type} className="icon-image"/>
+            {getIconPath(value.type) && 
+                <img src={getIconPath(value.type)} alt={value.type} className="icon-image"/>
             }
             <div className="banner-value">
                 {value.value}
