@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import BannerComponent from "../components/banner.component";
 import Header from "../components/header.component";
-import RestartComponent from "../components/restart.component";
-import NetworkConfigComponent from "../components/network-config.component";
 
 import { Value } from "../model/value.d";
 
@@ -49,14 +47,6 @@ const Home: React.FC = () => {
   }, [valuesM1, valuesM3]);
 
 
-  const toggleNetworkConfig = () => {
-    setShowNetworkConfig(!showNetworkConfig);
-  };
-
-  const toggleRestart = () => {
-    setShowRestart(!showRestart);
-  };
-
   return (
     <>
       <Header onConfigClick={toggleNetworkConfig} onRestartClick={toggleRestart} />
@@ -74,9 +64,6 @@ const Home: React.FC = () => {
           ))}
         </div>
       </div>
-      
-
-
 
       {showNetworkConfig && <NetworkConfigComponent onConfigClick={toggleNetworkConfig} />}
       {showRestart && <RestartComponent onRestartClick={toggleRestart} />}
