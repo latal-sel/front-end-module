@@ -6,11 +6,11 @@ import type { Event } from "../model/event";
 import { fetchEvents } from "../api/events";
 
 const filters = [
-    "Date",
-    "Message",
-    "Origine",
-    "Etat",
-    "Type"
+    ['Date', 'timestamp'],
+    ["Message", "message"],
+    ["Origine", "origin"],
+    ["Etat", "state"],
+    ["Type", "eventType"]
 ];
 
 export default function History() {
@@ -38,8 +38,7 @@ export default function History() {
   const filteredData: Event[] = events.filter((entry) => {
     return Object.entries(filterValues).every(([key, value]) => {
         if (!value) return true;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const entryValue = (entry as any)[key.toLowerCase()];
+        const entryValue = (entry as Event)[key as keyof Event];
         return entryValue.toLowerCase().includes(value.toLowerCase());
     });
   }); 
@@ -52,20 +51,20 @@ export default function History() {
       </div>
       <div className="flex mt-2 space-x-4 pl-24">
         {filters.map((filter) => (
-          <div key={filter}>
+          <div key={filter[1]}>
             <button 
-              onClick={() => toggleFilter(filter)} 
+              onClick={() => toggleFilter(filter[1])} 
               className="bg-blue-200 text-white px-4 rounded-md hover:bg-blue-400"
             >
-              {filterValues[filter] && <img src={cross} className="w-6 h-6 inline-block" alt="" onClick={() => handleFilterChange(filter, "")} />}
-              {filterValues[filter] ? `${filter} : ${filterValues[filter]}` : `➕ ${filter}`}   
+              {filterValues[filter[1]] && <img src={cross} className="w-6 h-6 inline-block" alt="" onClick={() => handleFilterChange(filter[1], "")} />}
+              {filterValues[filter[1]] ? `${filter[0]} : ${filterValues[filter[1]]}` : `➕ ${filter[0]}`}   
             </button>
-            {visibleFilters === filter ? <FilterComponent type={filter} value={filterValues[filter] || ""} filterOnChange={(value) => handleFilterChange(filter, value)} /> : null}
+            {visibleFilters === filter[1] ? <FilterComponent type={filter[0]} value={filterValues[filter[1]] || ""} filterOnChange={(value) => handleFilterChange(filter[1], value)} /> : null}
           </div>
         ))}
       </div>
       <table className="border-collapse border border-gray-500 w-9/10 mt-4 text-center justify-center mx-auto">
-        <thead className="bg-yellow-300"> 
+        <thead className="bg-blue-300"> 
           <tr>
             <th className="border border-gray-300 px-4 py-2">Date</th>
             <th className="border border-gray-300 px-4 py-2">Message</th>

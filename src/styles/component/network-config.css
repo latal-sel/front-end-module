@@ -21,12 +21,6 @@
     padding-left: 1vw;
 }
 
-.network-config-title > img {
-    height: 3vw;
-    width: auto;
-    cursor: pointer;
-}
-
 .network-config-content {
     display: flex;
     flex-direction: row;
