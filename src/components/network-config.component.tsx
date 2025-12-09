@@ -42,10 +42,10 @@ export default function NetworkConfigComponent({ onConfigClick }: networkConfigP
     }
 
     return (
-        <div className="network-config">
+        <div className="w-11/12 h-auto fixed bg-white border border-gray-300 rounded-md p-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg">
             <div>
                 <div className="network-config-title">
-                    <h2>Configuration réseau</h2>
+                    <h2 className="text-lg font-semibold">Configuration réseau</h2>
                     <img src={cross} onClick={onConfigClick} alt="Close" />
                 </div>
                 <div className="network-config-content">
