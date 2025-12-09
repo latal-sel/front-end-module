@@ -1,8 +1,7 @@
-import type { Origin } from "./origin";
-
 export class Value {
-    timestamp: Date;
-    origin: Origin;
+    datatype: string;
+    module: string;
+    type: string;
     name: string;
     value: number;
     unit: string;

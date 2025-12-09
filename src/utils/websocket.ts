@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import type { Value } from "../model/value";
 
 
 
@@ -22,9 +23,11 @@ class WebSocketClient {
         this.socket?.emit("message", payload);
     }
 
-    on(callback: (data: string) => void) {
+    on(callback: (data: Value) => void) {
         if (this.socket) {
-            this.socket.on("message", callback);
+            this.socket.on("message", (data: string) => {
+                callback(JSON.parse(data));
+            });
         }
     }
 
