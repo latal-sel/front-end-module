@@ -17,6 +17,8 @@ export default function History() {
   const [visibleFilters, setVisibleFilters] = useState<string | null>(null);
   const [filterValues, setFilterValues] = useState<{ [key: string]: string }>({});  
   const [events, setEvents] = useState<Event[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   useEffect(() => {
     fetchEvents().then((data) => setEvents(data));
@@ -33,6 +35,7 @@ export default function History() {
       ...prevValues,
       [filterName]: value,
     }));
+    setCurrentPage(1);
   }
 
   const filteredData: Event[] = events.filter((entry) => {
@@ -43,6 +46,21 @@ export default function History() {
     });
   }); 
 
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = filteredData.slice(startIndex, endIndex);
+
+  function handlePageChange(newPage: number) {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+  }
+
+  function handleItemsPerPageChange(newItemsPerPage: number) {
+    setItemsPerPage(newItemsPerPage);
+    setCurrentPage(1);
+  }
+
   return (
     <>
       <Header />
@@ -51,7 +69,7 @@ export default function History() {
       </div>
       <div className="flex mt-2 space-x-4 pl-24">
         {filters.map((filter) => (
-          <div key={filter[1]}>
+          <div className="mt-4" key={filter[1]}>
             <button 
               onClick={() => toggleFilter(filter[1])} 
               className="bg-blue-200 text-white px-4 rounded-md hover:bg-blue-400"
@@ -62,6 +80,20 @@ export default function History() {
             {visibleFilters === filter[1] ? <FilterComponent type={filter[0]} value={filterValues[filter[1]] || ""} filterOnChange={(value) => handleFilterChange(filter[1], value)} /> : null}
           </div>
         ))}
+        <div className="flex justify-end items-center ml-auto pr-24">
+          <select className="ml-4 p-2 border border-gray-300 rounded-md" value={itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select> 
+          <div className="ml-4">
+            <button className="p-2 border border-gray-300 rounded-md mr-2 hover:bg-gray-200" onClick={() => handlePageChange(currentPage - 1)}>{'<'}</button>
+            <span className="pr-2">Page {currentPage} sur {totalPages}</span>
+            <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-200" onClick={() => handlePageChange(currentPage + 1)}>{'>'}</button>
+          </div>
+        </div>
       </div>
       <table className="border-collapse border border-gray-500 w-9/10 mt-4 text-center justify-center mx-auto">
         <thead className="bg-blue-300"> 
@@ -74,7 +106,7 @@ export default function History() {
           </tr>
         </thead>
         <tbody>
-          {filteredData.map((entry, index) => (
+          {paginatedData.map((entry, index) => (
             <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}>
               <td className="border border-gray-300 px-4 py-2">{entry.timestamp}</td>
               <td className="border border-gray-300 px-4 py-2">{entry.message}</td>
