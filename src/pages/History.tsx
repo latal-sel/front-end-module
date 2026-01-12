@@ -5,12 +5,17 @@ import cross from "../assets/cross.svg"
 import type { Event } from "../model/event";
 import { fetchEvents } from "../api/events";
 
-const filters = [
-    ['Date', 'timestamp'],
-    ["Message", "message"],
-    ["Origine", "origin"],
-    ["Etat", "state"],
-    ["Type", "eventType"]
+type FilterConfig = {
+  label: string;
+  key: string;
+};
+
+const filters: FilterConfig[] = [
+  { label: 'Date', key: 'timestamp' },
+  { label: 'Message', key: 'message' },
+  { label: 'Origine', key: 'origin' },
+  { label: 'Etat', key: 'state' },
+  { label: 'Type', key: 'eventType' }
 ];
 
 export default function History() {
@@ -42,7 +47,7 @@ export default function History() {
     return Object.entries(filterValues).every(([key, value]) => {
         if (!value) return true;
         const entryValue = (entry as Event)[key as keyof Event];
-        return entryValue.toLowerCase().includes(value.toLowerCase());
+        return typeof entryValue === 'string' ? entryValue.toLowerCase().includes(value.toLowerCase()) : entryValue.name.includes(value);
     });
   }); 
 
@@ -69,17 +74,19 @@ export default function History() {
       </div>
       <div className="flex mt-2 space-x-4 pl-24">
         {filters.map((filter) => (
-          <div className="mt-4" key={filter[1]}>
+          <div className="mt-4" key={filter.key}>
             <button 
-              onClick={() => toggleFilter(filter[1])} 
+              onClick={() => toggleFilter(filter.key)} 
               className="bg-blue-200 text-white px-4 rounded-md hover:bg-blue-400"
             >
-              {filterValues[filter[1]] && <img src={cross} className="w-6 h-6 inline-block" alt="" onClick={() => handleFilterChange(filter[1], "")} />}
-              {filterValues[filter[1]] ? `${filter[0]} : ${filterValues[filter[1]]}` : `➕ ${filter[0]}`}   
+              {filterValues[filter.key] && <img src={cross} className="w-6 h-6 inline-block" alt="" onClick={() => handleFilterChange(filter.key, "")} />}
+                {filterValues[filter.key] 
+                ? `${filter.label} : ${filterValues[filter.key].length > 10 ? filterValues[filter.key].substring(0, 10) + '...' : filterValues[filter.key]}` 
+                : `➕ ${filter.label}`}
             </button>
-            {visibleFilters === filter[1] ? <FilterComponent type={filter[0]} value={filterValues[filter[1]] || ""} filterOnChange={(value) => handleFilterChange(filter[1], value)} /> : null}
+            {visibleFilters === filter.key ? <FilterComponent type={filter.label} value={filterValues[filter.key] || ""} filterOnChange={(value) => handleFilterChange(filter.key, value)} /> : null}
           </div>
-        ))}
+        ))} 
         <div className="flex justify-end items-center ml-auto pr-24">
           <select className="ml-4 p-2 border border-gray-300 rounded-md" value={itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}>
             <option value="10">10</option>
@@ -110,9 +117,9 @@ export default function History() {
             <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}>
               <td className="border border-gray-300 px-4 py-2">{entry.timestamp}</td>
               <td className="border border-gray-300 px-4 py-2">{entry.message}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.origin}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.state}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.eventType}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.origin.name}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.state.name}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.eventType.name}</td>
             </tr>
           ))}
         </tbody>
