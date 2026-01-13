@@ -1,3 +1,4 @@
-export enum State {
-    RESOLVED = "Résolu",
+export interface State {
+    id: number;
+    name: string;
 }

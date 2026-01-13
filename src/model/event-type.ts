@@ -1,3 +1,4 @@
-export enum EventType {
-    ALARM = "Alarme",
+export interface EventType {
+    id: number;
+    name: string;
 }
