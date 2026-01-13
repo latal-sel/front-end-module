@@ -24,7 +24,7 @@ const Home: React.FC = () => {
         console.log("Index found: ", index);
         console.log("Value to insert: ", ValueToInsert);
         console.log("Current array: ", ValueArray);
-        if (index != -1) {
+        if (index !== -1) {
             const newArray = [...ValueArray];
             newArray[index] = ValueToInsert;
             setValues(newArray);
@@ -38,7 +38,6 @@ const Home: React.FC = () => {
         websocketClient.connect();
 
         websocketClient.on((data: Value) => {
-            // console.log("Received data via WebSocket: ", data);
             if (data.datatype != "variable_change") return;
             data.isSimulated = false;
             if (data.module === "M1")
@@ -54,7 +53,7 @@ const Home: React.FC = () => {
             <Header />
             <div className="flex pt-4 w-1/1 flex-row space-x-4 px-4">
                 <div className="w-1/2 flex flex-col items-center">
-                    <div className="inline-flex items-center space-x-3">
+                    <div className="inline-flex items-center space-x-3 mb-2">
                         <span className="font-semibold text-lg">
                             Valeurs M1
                         </span>
@@ -67,18 +66,21 @@ const Home: React.FC = () => {
                             <span className="slider round"></span>
                         </label>
                     </div>
-                    {isCheckedM1 && valuesM1.length === 0 && (
+                    {valuesM1.length === 0 && (
                         <span className="text-gray-500 mt-4">
                             Aucune valeur reçue du module M1.
                         </span>
                     )}
-                    {isCheckedM1 &&
-                        valuesM1.map((value, index) => (
-                            <BannerComponent key={index} value={value} />
-                        ))}
+                    {valuesM1.map((value, index) => (
+                        <BannerComponent
+                            key={index}
+                            value={value}
+                            isEnabled={isCheckedM1}
+                        />
+                    ))}
                 </div>
                 <div className="w-1/2 flex flex-col items-center">
-                    <div className="inline-flex items-center space-x-3">
+                    <div className="inline-flex items-center space-x-3 mb-2">
                         <span className="font-semibold text-lg">
                             Valeurs M3
                         </span>
@@ -91,15 +93,18 @@ const Home: React.FC = () => {
                             <span className="slider round"></span>
                         </label>
                     </div>
-                    {isCheckedM3 && valuesM3.length === 0 && (
+                    {valuesM3.length === 0 && (
                         <span className="text-gray-500 mt-4">
                             Aucune valeur reçue du module M3.
                         </span>
                     )}
-                    {isCheckedM3 &&
-                        valuesM3.map((value, index) => (
-                            <BannerComponent key={index} value={value} />
-                        ))}
+                    {valuesM3.map((value, index) => (
+                        <BannerComponent
+                            key={index}
+                            value={value}
+                            isEnabled={isCheckedM3}
+                        />
+                    ))}
                 </div>
             </div>
         </>
