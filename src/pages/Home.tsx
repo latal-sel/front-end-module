@@ -48,29 +48,29 @@ const Home: React.FC = () => {
       <Header/>
       <div className="flex pt-4 w-1/1 flex-row space-x-4 px-4">
       <div className="w-1/2 flex flex-col items-center">
-        <div className="inline-flex items-center space-x-3">
+        <div className="inline-flex items-center space-x-3 mb-2">
           <span className="font-semibold text-lg">Valeurs M1</span>
           <label className="switch">
             <input type="checkbox" checked={isCheckedM1} onChange={() => setIsCheckedM1(!isCheckedM1)} />
             <span className='slider round'></span>
           </label>
         </div>
-        { isCheckedM1 && valuesM1.length === 0 && <span className="text-gray-500 mt-4">Aucune valeur reçue du module M1.</span> }
-        {isCheckedM1 && valuesM1.map((value, index) => (
-        <BannerComponent key={index} value={value} />
+        {valuesM1.length === 0 && <span className="text-gray-500 mt-4">Aucune valeur reçue du module M1.</span> }
+        {valuesM1.map((value, index) => (
+          <BannerComponent key={index} value={value} isEnabled={isCheckedM1} />
         ))}
       </div>
       <div className="w-1/2 flex flex-col items-center">
-        <div className="inline-flex items-center space-x-3">
+        <div className="inline-flex items-center space-x-3 mb-2">
           <span className="font-semibold text-lg">Valeurs M3</span>
           <label className="switch">
             <input type="checkbox" checked={isCheckedM3} onChange={() => setIsCheckedM3(!isCheckedM3)} />
             <span className='slider round'></span>
           </label>
         </div>
-        { isCheckedM3 && valuesM3.length === 0 && <span className="text-gray-500 mt-4">Aucune valeur reçue du module M3.</span> }
-        {isCheckedM3 && valuesM3.map((value, index) => (
-        <BannerComponent key={index} value={value} />
+        {valuesM3.length === 0 && <span className="text-gray-500 mt-4">Aucune valeur reçue du module M3.</span> }
+        {valuesM3.map((value, index) => (
+        <BannerComponent key={index} value={value} isEnabled={isCheckedM3} />
         ))}
       </div>
       </div>
