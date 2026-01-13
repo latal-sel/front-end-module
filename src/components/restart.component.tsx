@@ -1,13 +1,15 @@
 import cross from "../assets/cross.svg";
+import { reloadSystem } from "../api/reload";
 import '../styles/component/restart.css'
 
 interface restartProps { 
-    onRestartClick?: () => void;
+    onRestartClick: () => void;
 }
 
 export default function RestartComponent({ onRestartClick }: restartProps) {
     function handleRestart() {
-        // Logic to handle restart
+        reloadSystem();
+        onRestartClick();
     }
 
     return (
