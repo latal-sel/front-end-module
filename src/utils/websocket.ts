@@ -23,9 +23,10 @@ class WebSocketClient {
         this.socket?.emit("message", payload);
     }
 
-    on(callback: (data: Value) => void) {
+    on(topic: string, callback: (data: Value) => void) {
         if (this.socket) {
-            this.socket.on("message", (data: string) => {
+            this.socket.on(topic, (data: string) => {
+                // console.log("Received data via WebSocket: ", data , "on topic: ", topic);
                 callback(JSON.parse(data));
             });
         }
