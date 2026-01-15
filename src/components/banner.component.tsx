@@ -28,7 +28,7 @@ function getIconPath(type: string): string {
     return "";
 }
 
-export default function BannerComponent({value, isEnabled = true}: {value: Value, isEnabled?: boolean}) {
+export default function BannerComponent({value, isEnabled = true, onValueChange}: {value: Value, isEnabled?: boolean, onValueChange?: (newValue: string) => void}) {
     const [isChecked, setIsChecked] = useState(isEnabled);
 
     useEffect(() => {
@@ -44,7 +44,15 @@ export default function BannerComponent({value, isEnabled = true}: {value: Value
                 <img src={getIconPath(value.type)} alt={value.type} className="icon-image"/>
             }
             <div className="banner-value">
-                {isChecked && isEnabled ? <input type="text" className="border border-solid border-black text-right" defaultValue={value.value}/> : value.value}
+                {isChecked && isEnabled ? (
+                    <input 
+                        type="number" 
+                        className="border border-solid border-black text-right" 
+                        defaultValue={value.value}
+                        onChange={(e) => onValueChange?.(e.target.value)}
+                        onBlur={(e) => onValueChange?.(e.target.value)}
+                    />
+                ) : value.value}
             </div>
             <div className="banner-unit">
                 {value.unit}
