@@ -41,7 +41,7 @@ const Home: React.FC = () => {
         websocketClient.connect();
 
         websocketClient.on("ihm_log", (data: Value) => {
-            data.isSimulated = false;
+            data.module = "M1"; // TEMPORARY BEFORE WE GET REAL VALUES
             if (data.module === "M1") {
                 insertValueIntoArray(data, valuesM1, setValuesM1);
                 setModifiedValuesM1(prev => ({
