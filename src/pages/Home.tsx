@@ -16,6 +16,8 @@ const Home: React.FC = () => {
     const [isCheckedM3, setIsCheckedM3] = useState<boolean>(true);
     const [modifiedValuesM1, setModifiedValuesM1] = useState<Record<string, string>>({});
     const [modifiedValuesM3, setModifiedValuesM3] = useState<Record<string, string>>({});
+    const [toSimulateM1, setToSimulateM1] = useState<Record<string, boolean>>({});
+    const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
 
     const insertValueIntoArray = (
         ValueToInsert: Value,
@@ -25,9 +27,7 @@ const Home: React.FC = () => {
         const index = ValueArray.findIndex(
             (v) => v.name === ValueToInsert.name
         );
-        console.log("Index found: ", index);
-        console.log("Value to insert: ", ValueToInsert);
-        console.log("Current array: ", ValueArray);
+      
         if (index !== -1) {
             const newArray = [...ValueArray];
             newArray[index] = ValueToInsert;
@@ -38,15 +38,25 @@ const Home: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log("Setting up WebSocket connection");
         websocketClient.connect();
 
         websocketClient.on("ihm_log", (data: Value) => {
             data.isSimulated = false;
-            if (data.module === "M1")
+            if (data.module === "M1") {
                 insertValueIntoArray(data, valuesM1, setValuesM1);
+                setModifiedValuesM1(prev => ({
+                    ...prev,
+                    [data.name]: data.value.toString()
+                })
+                );
+            }
             else if (data.module === "M3") {
                 insertValueIntoArray(data, valuesM3, setValuesM3);
+                setModifiedValuesM3(prev => ({
+                    ...prev,
+                    [data.name]: data.value.toString()
+                })
+                );
             }
         });
     }, [valuesM1, valuesM3]);
@@ -67,32 +77,64 @@ const Home: React.FC = () => {
         }));
     };
 
+    const handleSimulateChangeM1 = (valueName: string, shouldSimulate: boolean) => {
+        console.log("Simulate changed M1:", valueName, shouldSimulate);
+        setToSimulateM1(prev => ({
+            ...prev,
+            [valueName]: shouldSimulate
+        }));
+    };
+
+    const handleSimulateChangeM3 = (valueName: string, shouldSimulate: boolean) => {
+        console.log("Simulate changed M3:", valueName, shouldSimulate);
+        setToSimulateM3(prev => ({
+            ...prev,
+            [valueName]: shouldSimulate
+        }));
+    };
+
     const handleSubmit = () => {
-        console.log("Valeurs modifiées M1:", modifiedValuesM1);
-        console.log("Valeurs modifiées M3:", modifiedValuesM3);
+        console.log("Valeurs M1:", valuesM1);
+        console.log("Valeurs M3:", valuesM3);
+        console.log("To simulate M1:", toSimulateM1);
+        console.log("To simulate M3:", toSimulateM3);
 
         const simulationOrders: SimulationOrder[] = [];
 
-        Object.entries(modifiedValuesM1).forEach(([name, value]) => {
+        valuesM1.forEach(value => {
+            const currentValue = modifiedValuesM1[value.name] !== undefined 
+                ? Number(modifiedValuesM1[value.name]) 
+                : Number(value.value);
+            const shouldSimulate = toSimulateM1[value.name] !== undefined 
+                ? toSimulateM1[value.name] 
+                : isCheckedM1;
+            
             simulationOrders.push({
-                to_simulate: true,
-                iec_path: name,
-                value: Number(value)
+                to_simulate: shouldSimulate,
+                iec_path: value.name,
+                value: currentValue
             });
         });
 
-        Object.entries(modifiedValuesM3).forEach(([name, value]) => {
+        valuesM3.forEach(value => {
+            const currentValue = modifiedValuesM3[value.name] !== undefined 
+                ? Number(modifiedValuesM3[value.name]) 
+                : Number(value.value);
+            const shouldSimulate = toSimulateM3[value.name] !== undefined 
+                ? toSimulateM3[value.name] 
+                : isCheckedM3;
+            
             simulationOrders.push({
-                to_simulate: true,
-                iec_path: name,
-                value: Number(value)
+                to_simulate: shouldSimulate,
+                iec_path: value.name,
+                value: currentValue
             });
         });
 
         simulationOrders.forEach(async (order) => {
             try {
                 await sendSimulationData(order);
-                console.log(`Simulation data sent for ${order.iec_path}`);
+                console.log(`Simulation data sent for ${order.iec_path} with to_simulate: ${order.to_simulate}`);
             } catch (error) {
                 console.error(`Failed to send simulation data for ${order.iec_path}:`, error);
             }
@@ -128,6 +170,7 @@ const Home: React.FC = () => {
                             value={value}
                             isEnabled={isCheckedM1}
                             onValueChange={(newValue) => handleValueChangeM1(value.name, newValue)}
+                            onSimulateChange={(shouldSimulate) => handleSimulateChangeM1(value.name, shouldSimulate)}
                         />
                     ))}
                 </div>
@@ -156,6 +199,7 @@ const Home: React.FC = () => {
                             value={value}
                             isEnabled={isCheckedM3}
                             onValueChange={(newValue) => handleValueChangeM3(value.name, newValue)}
+                            onSimulateChange={(shouldSimulate) => handleSimulateChangeM3(value.name, shouldSimulate)}
                         />
                     ))}
                 </div>

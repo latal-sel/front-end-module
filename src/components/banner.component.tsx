@@ -28,7 +28,7 @@ function getIconPath(type: string): string {
     return "";
 }
 
-export default function BannerComponent({value, isEnabled = true, onValueChange}: {value: Value, isEnabled?: boolean, onValueChange?: (newValue: string) => void}) {
+export default function BannerComponent({value, isEnabled = true, onValueChange, onSimulateChange}: {value: Value, isEnabled?: boolean, onValueChange?: (newValue: string) => void, onSimulateChange?: (shouldSimulate: boolean) => void}) {
     const [isChecked, setIsChecked] = useState(isEnabled);
 
     useEffect(() => {
@@ -62,7 +62,10 @@ export default function BannerComponent({value, isEnabled = true, onValueChange}
                     <input 
                         type="checkbox"
                         checked={isChecked}
-                        onChange={(e) => setIsChecked(e.target.checked)}
+                        onChange={(e) => {
+                            setIsChecked(e.target.checked);
+                            onSimulateChange?.(e.target.checked);
+                        }}
                         disabled={!isEnabled}
                     />
                     <span className="slider round"></span>
