@@ -8,7 +8,15 @@ class WebSocketClient {
 
     connect() {
         if (!this.socket) {
-            this.socket = io("http://localhost:3000");
+	    console.log("Connection...");
+            this.socket = io("http://192.168.200.1", {
+		path: "/socket.io/",
+		transports: ["websocket"]
+	    });
+
+	    this.socket.on("connect", () => console.log("✅ Connected"));
+	    this.socket.on("disconnect", () => console.log("⚠️ Disconnected"));
+	    this.socket.on("connect_error", (err) => console.error("❌ Connect error:", err));
         }
     }
 
@@ -26,7 +34,7 @@ class WebSocketClient {
     on(topic: string, callback: (data: Value) => void) {
         if (this.socket) {
             this.socket.on(topic, (data: string) => {
-                // console.log("Received data via WebSocket: ", data , "on topic: ", topic);
+                console.log("Received data via WebSocket: ", data , "on topic: ", topic);
                 callback(JSON.parse(data));
             });
         }
