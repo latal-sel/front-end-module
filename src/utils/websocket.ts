@@ -26,8 +26,8 @@ class WebSocketClient {
         }
     }
 
-    send(payload: string) {
-        this.socket?.emit("message", payload);
+    send(payload: string, topic: string = "message") {
+        this.socket?.emit(topic, payload);
     }
 
     onValue(topic: string, callback: (data: Value) => void) {

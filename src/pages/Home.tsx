@@ -21,6 +21,7 @@ const Home: React.FC = () => {
     const [toSimulateM1, setToSimulateM1] = useState<Record<string, boolean>>({});
     const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
     const [events, setEvents] = useState<Event[]>([]);
+    const firstRenderRef = React.useRef(true);
 
     const insertValueIntoArray = (
         ValueToInsert: Value,
@@ -42,7 +43,13 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         websocketClient.connect();
+        if (firstRenderRef.current) {
+            websocketClient.send('{"cmd":"GET_ALL_VALUES"}', "iec-order");
+            firstRenderRef.current = false;
+        }        
+    }, []);
 
+    useEffect(() => {
         websocketClient.onValue("ihm_log", (data: Value) => {
             if (data instanceof Event) return;
             if (!(data.name in paths)) return;
@@ -59,6 +66,27 @@ const Home: React.FC = () => {
                 }));
             }
         });
+    }, [valuesM1, valuesM3]);
+
+    useEffect(() => {
+        websocketClient.onValue("iec-get-all-values", (data: Value) => {
+            data.forEach((value) => {
+                if (!(value.name in paths)) return;
+                value.module = paths[value.name as keyof typeof paths][1];
+                value.displayName = paths[value.name as keyof typeof paths][0];
+
+                if (value.module === "M1")
+                    insertValueIntoArray(value, valuesM1, setValuesM1);
+                else if (value.module === "M3") {
+                    insertValueIntoArray(value, valuesM3, setValuesM3);
+                    setModifiedValuesM3(prev => ({
+                        ...prev,
+                        [value.name]: value.value.toString()
+                    }));
+                }
+            });
+        }
+        );
     }, [valuesM1, valuesM3]);
 
     useEffect(() => {
