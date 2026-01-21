@@ -1,6 +1,5 @@
 export class Value {
-    datatype: string;
-    module: string;
+    origin: int;
     type: string;
     name: string;
     value: number;

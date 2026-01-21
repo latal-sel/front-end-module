@@ -39,9 +39,9 @@ const Home: React.FC = () => {
 
         websocketClient.on("ihm_log", (data: Value) => {
             data.isSimulated = false;
-            if (data.module === "M1")
+            if (data.origin === 0)
                 insertValueIntoArray(data, valuesM1, setValuesM1);
-            else if (data.module === "M3") {
+            else if (data.origin != 0) {
                 insertValueIntoArray(data, valuesM3, setValuesM3);
             }
         });
