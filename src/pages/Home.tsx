@@ -14,8 +14,8 @@ import { websocketClient } from "../utils/websocket";
 const Home: React.FC = () => {
     const [valuesM1, setValuesM1] = useState<Value[]>([]);
     const [valuesM3, setValuesM3] = useState<Value[]>([]);
-    const [isCheckedM1, setIsCheckedM1] = useState<boolean>(true);
-    const [isCheckedM3, setIsCheckedM3] = useState<boolean>(true);
+    const [isCheckedM1, setIsCheckedM1] = useState<boolean>(false);
+    const [isCheckedM3, setIsCheckedM3] = useState<boolean>(false);
     const [modifiedValuesM1, setModifiedValuesM1] = useState<Record<string, string>>({});
     const [modifiedValuesM3, setModifiedValuesM3] = useState<Record<string, string>>({});
     const [toSimulateM1, setToSimulateM1] = useState<Record<string, boolean>>({});
