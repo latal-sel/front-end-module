@@ -41,16 +41,10 @@ const Home: React.FC = () => {
         websocketClient.connect();
 
         websocketClient.on("ihm_log", (data: Value) => {
-            data.module = "M1"; // TEMPORARY BEFORE WE GET REAL VALUES
-            if (data.module === "M1") {
+            data.isSimulated = false;
+            if (data.origin === 0)
                 insertValueIntoArray(data, valuesM1, setValuesM1);
-                setModifiedValuesM1(prev => ({
-                    ...prev,
-                    [data.name]: data.value.toString()
-                })
-                );
-            }
-            else if (data.module === "M3") {
+            else if (data.origin != 0) {
                 insertValueIntoArray(data, valuesM3, setValuesM3);
                 setModifiedValuesM3(prev => ({
                     ...prev,

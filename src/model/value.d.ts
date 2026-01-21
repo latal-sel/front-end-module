@@ -1,5 +1,5 @@
 export class Value {
-    module?: string;
+    origin: int;
     type: string;
     name: string;
     value: number;
