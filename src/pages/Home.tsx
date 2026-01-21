@@ -48,8 +48,7 @@ const Home: React.FC = () => {
             if (!(data.name in paths)) return;
             data.module = paths[data.name as keyof typeof paths][1];
             data.displayName = paths[data.name as keyof typeof paths][0];
-            if (data.name != "variable_change") return;
-            data.isSimulated = false;
+            
             if (data.module === "M1")
                 insertValueIntoArray(data, valuesM1, setValuesM1);
             else if (data.module === "M3") {
