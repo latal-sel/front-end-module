@@ -8,4 +8,5 @@ export class Event {
     origin: Origin;
     eventType: EventType;
     state: State;
+    criticity: string;
 }

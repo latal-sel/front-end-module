@@ -6,6 +6,8 @@ import Header from "../components/header.component";
 import { Value } from "../model/value.d";
 import { SimulationOrder } from "../model/simulation-order.d";
 import { sendSimulationData } from "../api/simulation";
+import { Event } from "../model/event.d";
+import paths from '../utils/paths.json';
 
 import { websocketClient } from "../utils/websocket";
 
@@ -18,6 +20,7 @@ const Home: React.FC = () => {
     const [modifiedValuesM3, setModifiedValuesM3] = useState<Record<string, string>>({});
     const [toSimulateM1, setToSimulateM1] = useState<Record<string, boolean>>({});
     const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
+    const [events, setEvents] = useState<Event[]>([]);
 
     const insertValueIntoArray = (
         ValueToInsert: Value,
@@ -40,20 +43,30 @@ const Home: React.FC = () => {
     useEffect(() => {
         websocketClient.connect();
 
-        websocketClient.on("ihm_log", (data: Value) => {
+        websocketClient.onValue("ihm_log", (data: Value) => {
+            if (data instanceof Event) return;
+            if (!(data.name in paths)) return;
+            data.module = paths[data.name as keyof typeof paths][1];
+            data.displayName = paths[data.name as keyof typeof paths][0];
+            if (data.name != "variable_change") return;
             data.isSimulated = false;
-            if (data.origin === 0)
+            if (data.module === "M1")
                 insertValueIntoArray(data, valuesM1, setValuesM1);
-            else if (data.origin != 0) {
+            else if (data.module === "M3") {
                 insertValueIntoArray(data, valuesM3, setValuesM3);
                 setModifiedValuesM3(prev => ({
                     ...prev,
                     [data.name]: data.value.toString()
-                })
-                );
+                }));
             }
         });
     }, [valuesM1, valuesM3]);
+
+    useEffect(() => {
+        websocketClient.onEvent("ihm_event", (data: Event) => {
+            setEvents((prevEvents) => [...prevEvents, data]);
+        });
+    }, [events]);
 
     const handleValueChangeM1 = (valueName: string, newValue: string) => {
         console.log("Value changed M1:", valueName, newValue);
@@ -201,6 +214,26 @@ const Home: React.FC = () => {
             { (isCheckedM1 || isCheckedM3) && <button onClick={handleSubmit} className="fixed bottom-8 right-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
                 Envoyer
             </button>}
+            <table className="border-collapse border border-gray-500 w-9/10 mt-4 text-center justify-center mx-auto">
+                <thead className="bg-blue-300"> 
+                    <tr>
+                        <th className="border border-gray-300 px-4 py-2">Timestamp</th>
+                        <th className="border border-gray-300 px-4 py-2">Origine</th>
+                        <th className="border border-gray-300 px-4 py-2">Message</th>
+                        <th className="border border-gray-300 px-4 py-2">Criticité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {events.slice(-3).reverse().map((event, index) => (
+                        <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}>
+                            <td className="border border-gray-300 px-4 py-2">{new Date(event.timestamp).toLocaleString()}</td>
+                            <td className="border border-gray-300 px-4 py-2">{event.origin.name}</td>
+                            <td className="border border-gray-300 px-4 py-2">{event.message}</td>
+                            <td className="border border-gray-300 px-4 py-2">{event.criticity}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </>
     );
 };
