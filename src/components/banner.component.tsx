@@ -36,14 +36,14 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
     }, [isEnabled]);
 
     return (
-        <div className="banner" style={{backgroundColor: getBackgroundColor(value.type)}}>
-            <div className="banner-name">
+        <div className="banner mt-1" style={{backgroundColor: getBackgroundColor(value.type)}}>
+            <div className="banner-name font-semibold text-lg">
                 {value.displayName}
             </div>
             {getIconPath(value.type) && 
                 <img src={getIconPath(value.type)} alt={value.type} className="icon-image"/>
             }
-            <div className="banner-value">
+            <div className="banner-value font-mono text-xl">
                 {isChecked && isEnabled ? (
                     <input 
                         type="number" 
@@ -54,7 +54,7 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
                     />
                 ) : value.value}
             </div>
-            <div className="banner-unit">
+            <div className="banner-unit text-sm font-normal">
                 {value.unit}
             </div>
             <div className="banner-simulation">
