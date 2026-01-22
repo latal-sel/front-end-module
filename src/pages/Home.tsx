@@ -22,27 +22,73 @@ const Home: React.FC = () => {
     const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
     const [events, setEvents] = useState<Event[]>([]);
 
-    const insertValueIntoArray = (
-        ValueToInsert: Value,
-        ValueArray: Value[],
-        setValues: React.Dispatch<React.SetStateAction<Value[]>>
-    ) => {
-        const index = ValueArray.findIndex(
-            (v) => v.name === ValueToInsert.name
-        );
-      
-        if (index !== -1) {
-            const newArray = [...ValueArray];
-            newArray[index] = ValueToInsert;
-            setValues(newArray);
-        } else {
-            setValues((prevValues) => [...prevValues, ValueToInsert]);
-        }
+    const processReceivedData = (rawDataList: any[]) => {
+        const newM1: Value[] = [];
+        const newM3: Value[] = [];
+        const newM3Modified: Record<string, string> = {};
+        const pathTyped: any = paths;
+
+        rawDataList.forEach((item) => {
+            const val: Value = {
+                name: item.iec,
+                value: item.val === "" ? 0 : Number(item.val),
+                unit: item.unit,
+                isSimulated: item.sim,
+                type: "",
+                module: "",
+                displayName: ""
+            };
+
+            if (val.name in pathTyped) {
+                val.module = (paths as any)[val.name][1];
+                val.displayName = (paths as any)[val.name][0];
+
+                if (val.module === "M1") {
+                    newM1.push(val);
+                } else if (val.module === "M3") {
+                    newM3.push(val);
+                    newM3Modified[val.name] = val.value.toString();
+                }
+            }
+        });
+
+        setValuesM1(newM1);
+        setValuesM3(newM3);
+        setModifiedValuesM3((prev) => ({ ...prev, ...newM3Modified }));
     };
 
     useEffect(() => {
         websocketClient.connect();
 
+        websocketClient.onValue("iec_get_all_values_response", (response: any) => {
+            if (response.status === 'ok' && Array.isArray(response.data)) {
+                processReceivedData(response.data);
+            }
+        });
+
+        setTimeout(() => {
+             websocketClient.emit("iec_order", { cmd: "GET_ALL_VALUES" }); 
+        }, 500);
+        return () => {
+        };
+    }, []);
+
+    const insertValueIntoArray = (
+        valueToInsert: Value,
+        setValues: React.Dispatch<React.SetStateAction<Value[]>>
+    ) => {
+        setValues((prevValues) => {
+            const index = prevValues.findIndex((v) => v.name === valueToInsert.name);
+            if (index !== -1) {
+                const newArray = [...prevValues];
+                newArray[index] = valueToInsert;
+                return newArray;
+            }
+            return [...prevValues, valueToInsert];
+        });
+    };
+
+    useEffect(() => {
         websocketClient.onValue("ihm_log", (data: Value) => {
             if (data instanceof Event) return;
             if (!(data.name in paths)) return;
@@ -50,16 +96,49 @@ const Home: React.FC = () => {
             data.displayName = paths[data.name as keyof typeof paths][0];
             
             if (data.module === "M1")
-                insertValueIntoArray(data, valuesM1, setValuesM1);
+                insertValueIntoArray(data, setValuesM1);
             else if (data.module === "M3") {
-                insertValueIntoArray(data, valuesM3, setValuesM3);
+                insertValueIntoArray(data, setValuesM3);
                 setModifiedValuesM3(prev => ({
                     ...prev,
                     [data.name]: data.value.toString()
                 }));
             }
         });
-    }, [valuesM1, valuesM3]);
+    }, []);
+
+    useEffect(() => {
+                websocketClient.onValue("iec-get-all-values-response", (data: Value) => {
+                const valuesArray: Value[] = (data as unknown as any).data.map((item: any) => {
+                const value: Value = {
+                    name: item.iec,
+                    value: item.val === "" ? 0 : Number(item.val),
+                    unit: item.unit,
+                    isSimulated: item.sim,
+                    type: "",
+                    module: "",
+                    displayName: ""
+                };
+                if (value.name in paths) {
+                    value.module = paths[value.name as keyof typeof paths][1];
+                    value.displayName = paths[value.name as keyof typeof paths][0];
+                }
+                return value;
+            });
+
+            valuesArray.forEach((value) => {
+                if (value.module === "M1")
+                    insertValueIntoArray(value, setValuesM1);
+                else if (value.module === "M3") {
+                    insertValueIntoArray(value, setValuesM3);
+                    setModifiedValuesM3(prev => ({
+                        ...prev,
+                        [value.name]: value.value.toString()
+                    }));
+                }
+            });
+        });
+    }, []);
 
     useEffect(() => {
         websocketClient.onEvent("ihm_event", (data: Event) => {
