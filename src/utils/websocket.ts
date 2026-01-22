@@ -1,5 +1,4 @@
 import { io, Socket } from "socket.io-client";
-import type { Value } from "../model/value";
 import type { Event } from "../model/event";
 
 class WebSocketClient {
@@ -8,7 +7,8 @@ class WebSocketClient {
     connect() {
         if (!this.socket) {
             console.log("Connection...");
-            this.socket = io("http://127.0.0.1:3000", {
+            this.socket = io("http://192.168.200.1", {
+                path: "/socket.io/",
                 transports: ["websocket"]
             });
 

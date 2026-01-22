@@ -40,8 +40,8 @@ const Home: React.FC = () => {
             };
 
             if (val.name in pathTyped) {
-                val.module = paths[val.name][1];
-                val.displayName = paths[val.name][0];
+                val.module = (paths as any)[val.name][1];
+                val.displayName = (paths as any)[val.name][0];
 
                 if (val.module === "M1") {
                     newM1.push(val);
@@ -74,21 +74,18 @@ const Home: React.FC = () => {
     }, []);
 
     const insertValueIntoArray = (
-        ValueToInsert: Value,
-        ValueArray: Value[],
+        valueToInsert: Value,
         setValues: React.Dispatch<React.SetStateAction<Value[]>>
     ) => {
-        const index = ValueArray.findIndex(
-            (v) => v.name === ValueToInsert.name
-        );
-      
-        if (index !== -1) {
-            const newArray = [...ValueArray];
-            newArray[index] = ValueToInsert;
-            setValues(newArray);
-        } else {
-            setValues((prevValues) => [...prevValues, ValueToInsert]);
-        }
+        setValues((prevValues) => {
+            const index = prevValues.findIndex((v) => v.name === valueToInsert.name);
+            if (index !== -1) {
+                const newArray = [...prevValues];
+                newArray[index] = valueToInsert;
+                return newArray;
+            }
+            return [...prevValues, valueToInsert];
+        });
     };
 
     useEffect(() => {
@@ -99,16 +96,16 @@ const Home: React.FC = () => {
             data.displayName = paths[data.name as keyof typeof paths][0];
             
             if (data.module === "M1")
-                insertValueIntoArray(data, valuesM1, setValuesM1);
+                insertValueIntoArray(data, setValuesM1);
             else if (data.module === "M3") {
-                insertValueIntoArray(data, valuesM3, setValuesM3);
+                insertValueIntoArray(data, setValuesM3);
                 setModifiedValuesM3(prev => ({
                     ...prev,
                     [data.name]: data.value.toString()
                 }));
             }
         });
-    }, [valuesM1, valuesM3]);
+    }, []);
 
     useEffect(() => {
                 websocketClient.onValue("iec-get-all-values-response", (data: Value) => {
@@ -131,9 +128,9 @@ const Home: React.FC = () => {
 
             valuesArray.forEach((value) => {
                 if (value.module === "M1")
-                    insertValueIntoArray(value, valuesM1, setValuesM1);
+                    insertValueIntoArray(value, setValuesM1);
                 else if (value.module === "M3") {
-                    insertValueIntoArray(value, valuesM3, setValuesM3);
+                    insertValueIntoArray(value, setValuesM3);
                     setModifiedValuesM3(prev => ({
                         ...prev,
                         [value.name]: value.value.toString()
@@ -141,7 +138,7 @@ const Home: React.FC = () => {
                 }
             });
         });
-    }, [valuesM1, valuesM3]);
+    }, []);
 
     useEffect(() => {
         websocketClient.onEvent("ihm_event", (data: Event) => {
