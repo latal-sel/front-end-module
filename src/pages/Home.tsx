@@ -68,7 +68,6 @@ const Home: React.FC = () => {
     }, [events]);
 
     const handleValueChangeM1 = (valueName: string, newValue: string) => {
-        console.log("Value changed M1:", valueName, newValue);
         setModifiedValuesM1(prev => ({
             ...prev,
             [valueName]: newValue
@@ -76,7 +75,6 @@ const Home: React.FC = () => {
     };
 
     const handleValueChangeM3 = (valueName: string, newValue: string) => {
-        console.log("Value changed M3:", valueName, newValue);
         setModifiedValuesM3(prev => ({
             ...prev,
             [valueName]: newValue
@@ -84,7 +82,6 @@ const Home: React.FC = () => {
     };
 
     const handleSimulateChangeM1 = (valueName: string, shouldSimulate: boolean) => {
-        console.log("Simulate changed M1:", valueName, shouldSimulate);
         setToSimulateM1(prev => ({
             ...prev,
             [valueName]: shouldSimulate
@@ -92,7 +89,6 @@ const Home: React.FC = () => {
     };
 
     const handleSimulateChangeM3 = (valueName: string, shouldSimulate: boolean) => {
-        console.log("Simulate changed M3:", valueName, shouldSimulate);
         setToSimulateM3(prev => ({
             ...prev,
             [valueName]: shouldSimulate
@@ -100,11 +96,6 @@ const Home: React.FC = () => {
     };
 
     const handleSubmit = () => {
-        console.log("Valeurs M1:", valuesM1);
-        console.log("Valeurs M3:", valuesM3);
-        console.log("To simulate M1:", toSimulateM1);
-        console.log("To simulate M3:", toSimulateM3);
-
         const simulationOrders: SimulationOrder[] = [];
 
         valuesM1.forEach(value => {
@@ -140,7 +131,6 @@ const Home: React.FC = () => {
         simulationOrders.forEach(async (order) => {
             try {
                 await sendSimulationData(order);
-                console.log(`Simulation data sent for ${order.iec_path} with to_simulate: ${order.to_simulate}`);
             } catch (error) {
                 console.error(`Failed to send simulation data for ${order.iec_path}:`, error);
             }
