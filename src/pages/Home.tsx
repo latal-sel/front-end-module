@@ -295,13 +295,13 @@ const Home: React.FC = () => {
             { (isCheckedM1 || isCheckedM3) && <button onClick={handleSubmit} className="fixed bottom-8 right-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
                 Envoyer
             </button>}
-            <table className="border-collapse border border-gray-500 w-9/10 mt-4 text-center justify-center mx-auto">
+            <table className="border-collapse border border-gray-500 w-9/10 mt-3 text-center justify-center mx-auto">
                 <thead className="bg-blue-300"> 
                     <tr>
-                        <th className="border border-gray-300 px-4 py-2">Timestamp</th>
-                        <th className="border border-gray-300 px-4 py-2">Origine</th>
-                        <th className="border border-gray-300 px-4 py-2">Message</th>
-                        <th className="border border-gray-300 px-4 py-2">Criticité</th>
+                        <th className="border border-gray-300 px-4 py-1">Timestamp</th>
+                        <th className="border border-gray-300 px-4 py-1">Origine</th>
+                        <th className="border border-gray-300 px-4 py-1">Message</th>
+                        <th className="border border-gray-300 px-4 py-1">Criticité</th>
                     </tr>
                 </thead>
                 <tbody>
