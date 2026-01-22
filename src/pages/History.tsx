@@ -26,7 +26,7 @@ export default function History() {
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
 
   useEffect(() => {
-    fetchEvents().then((data) => setEvents(data));
+    fetchEvents().then((data) => setEvents(data.reverse()));
   }, []);
 
   function toggleFilter(filterName: string) {
