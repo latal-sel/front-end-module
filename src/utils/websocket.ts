@@ -7,15 +7,14 @@ class WebSocketClient {
 
     connect() {
         if (!this.socket) {
-	    console.log("Connection...");
-            this.socket = io("http://192.168.200.1", {
-		path: "/socket.io/",
-		transports: ["websocket"]
-	    });
+            console.log("Connection...");
+            this.socket = io("http://127.0.0.1:3000", {
+                transports: ["websocket"]
+            });
 
-	    this.socket.on("connect", () => console.log("✅ Connected"));
-	    this.socket.on("disconnect", () => console.log("⚠️ Disconnected"));
-	    this.socket.on("connect_error", (err) => console.error("❌ Connect error:", err));
+            this.socket.on("connect", () => console.log("✅ Connected"));
+            this.socket.on("disconnect", () => console.log("⚠️ Disconnected"));
+            this.socket.on("connect_error", (err) => console.error("❌ Connect error:", err));
         }
     }
 
@@ -30,11 +29,12 @@ class WebSocketClient {
         this.socket?.emit(topic, payload);
     }
 
-    onValue(topic: string, callback: (data: Value) => void) {
+    onValue(topic: string, callback: (data: any) => void) {
         if (this.socket) {
-            this.socket.on(topic, (data: string) => {
-                console.log("Received data via WebSocket: ", data , "on topic: ", topic);
-                callback(JSON.parse(data));
+            this.socket.on(topic, (data: any) => {
+                console.log(`Received on ${topic}:`, data);
+                const parsed = typeof data === 'string' ? JSON.parse(data) : data;
+                callback(parsed);
             });
         }
     }
@@ -44,6 +44,14 @@ class WebSocketClient {
             this.socket.on(topic, (data: string) => {
                 callback(JSON.parse(data));
             });
+        }
+    }
+
+    emit(topic: string, data: any) {
+        if (this.socket) {
+            this.socket.emit(topic, data);
+        } else {
+            console.warn("Socket not connected, cannot emit", topic);
         }
     }
 

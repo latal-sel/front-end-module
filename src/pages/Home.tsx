@@ -21,7 +21,57 @@ const Home: React.FC = () => {
     const [toSimulateM1, setToSimulateM1] = useState<Record<string, boolean>>({});
     const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
     const [events, setEvents] = useState<Event[]>([]);
-    const firstRenderRef = React.useRef(true);
+
+    const processReceivedData = (rawDataList: any[]) => {
+        const newM1: Value[] = [];
+        const newM3: Value[] = [];
+        const newM3Modified: Record<string, string> = {};
+        const pathTyped: any = paths;
+
+        rawDataList.forEach((item) => {
+            const val: Value = {
+                name: item.iec,
+                value: item.val === "" ? 0 : Number(item.val),
+                unit: item.unit,
+                isSimulated: item.sim,
+                type: "",
+                module: "",
+                displayName: ""
+            };
+
+            if (val.name in pathTyped) {
+                val.module = paths[val.name][1];
+                val.displayName = paths[val.name][0];
+
+                if (val.module === "M1") {
+                    newM1.push(val);
+                } else if (val.module === "M3") {
+                    newM3.push(val);
+                    newM3Modified[val.name] = val.value.toString();
+                }
+            }
+        });
+
+        setValuesM1(newM1);
+        setValuesM3(newM3);
+        setModifiedValuesM3((prev) => ({ ...prev, ...newM3Modified }));
+    };
+
+    useEffect(() => {
+        websocketClient.connect();
+
+        websocketClient.onValue("iec_get_all_values_response", (response: any) => {
+            if (response.status === 'ok' && Array.isArray(response.data)) {
+                processReceivedData(response.data);
+            }
+        });
+
+        setTimeout(() => {
+             websocketClient.emit("iec_order", { cmd: "GET_ALL_VALUES" }); 
+        }, 500);
+        return () => {
+        };
+    }, []);
 
     const insertValueIntoArray = (
         ValueToInsert: Value,
@@ -40,14 +90,6 @@ const Home: React.FC = () => {
             setValues((prevValues) => [...prevValues, ValueToInsert]);
         }
     };
-
-    useEffect(() => {
-        websocketClient.connect();
-        if (firstRenderRef.current) {
-            websocketClient.send('{"cmd":"GET_ALL_VALUES"}', "iec-order");
-            firstRenderRef.current = false;
-        }        
-    }, []);
 
     useEffect(() => {
         websocketClient.onValue("ihm_log", (data: Value) => {
@@ -69,12 +111,25 @@ const Home: React.FC = () => {
     }, [valuesM1, valuesM3]);
 
     useEffect(() => {
-        websocketClient.onValue("iec-get-all-values", (data: Value) => {
-            data.forEach((value) => {
-                if (!(value.name in paths)) return;
-                value.module = paths[value.name as keyof typeof paths][1];
-                value.displayName = paths[value.name as keyof typeof paths][0];
+                websocketClient.onValue("iec-get-all-values-response", (data: Value) => {
+                const valuesArray: Value[] = (data as unknown as any).data.map((item: any) => {
+                const value: Value = {
+                    name: item.iec,
+                    value: item.val === "" ? 0 : Number(item.val),
+                    unit: item.unit,
+                    isSimulated: item.sim,
+                    type: "",
+                    module: "",
+                    displayName: ""
+                };
+                if (value.name in paths) {
+                    value.module = paths[value.name as keyof typeof paths][1];
+                    value.displayName = paths[value.name as keyof typeof paths][0];
+                }
+                return value;
+            });
 
+            valuesArray.forEach((value) => {
                 if (value.module === "M1")
                     insertValueIntoArray(value, valuesM1, setValuesM1);
                 else if (value.module === "M3") {
@@ -85,8 +140,7 @@ const Home: React.FC = () => {
                     }));
                 }
             });
-        }
-        );
+        });
     }, [valuesM1, valuesM3]);
 
     useEffect(() => {
