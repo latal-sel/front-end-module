@@ -70,14 +70,15 @@ export default function History() {
     <>
       <Header />
       <div className="align-center pt-4 flex justify-center">
-        <h1 className="text-2xl font-bold">Historique</h1>
+        <h1 className="text-xl sm:text-2xl font-bold">Historique</h1>
       </div>
-      <div className="flex mt-2 space-x-4 pl-24">
+      <div className="flex flex-col lg:flex-row mt-2 space-y-2 lg:space-y-0 lg:space-x-4 px-4 sm:px-8 lg:px-24">
+        <div className="flex flex-wrap gap-2 lg:gap-4">
         {filters.map((filter) => (
-          <div className="mt-4" key={filter.key}>
+          <div key={filter.key}>
             <button 
               onClick={() => toggleFilter(filter.key)} 
-              className="bg-blue-200 text-white px-4 rounded-md hover:bg-blue-400"
+              className="bg-blue-200 text-white px-3 py-2 sm:px-4 rounded-md hover:bg-blue-400 text-sm sm:text-base whitespace-nowrap"
             >
               {filterValues[filter.key] && <img src={cross} className="w-6 h-6 inline-block" alt="" onClick={() => handleFilterChange(filter.key, "")} />}
                 {filterValues[filter.key] 
@@ -86,44 +87,47 @@ export default function History() {
             </button>
             {visibleFilters === filter.key ? <FilterComponent type={filter.label} value={filterValues[filter.key] || ""} filterOnChange={(value) => handleFilterChange(filter.key, value)} /> : null}
           </div>
-        ))} 
-        <div className="flex justify-end items-center ml-auto pr-24">
-          <select className="ml-4 p-2 border border-gray-300 rounded-md" value={itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}>
+        ))}
+        </div>
+        <div className="flex flex-col sm:flex-row justify-start lg:justify-end items-start sm:items-center gap-2 lg:ml-auto w-full lg:w-auto">
+          <select className="p-2 border border-gray-300 rounded-md text-sm sm:text-base" value={itemsPerPage} onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}>
             <option value="10">10</option>
             <option value="15">15</option>
             <option value="25">25</option>
             <option value="50">50</option>
             <option value="100">100</option>
           </select> 
-          <div className="ml-4">
+          <div className="flex items-center">
             <button className="p-2 border border-gray-300 rounded-md mr-2 hover:bg-gray-200" onClick={() => handlePageChange(currentPage - 1)}>{'<'}</button>
-            <span className="pr-2">Page {currentPage} sur {totalPages}</span>
+            <span className="pr-2 text-sm sm:text-base whitespace-nowrap">Page {currentPage} sur {totalPages}</span>
             <button className="p-2 border border-gray-300 rounded-md hover:bg-gray-200" onClick={() => handlePageChange(currentPage + 1)}>{'>'}</button>
           </div>
         </div>
       </div>
-      <table className="border-collapse border border-gray-500 w-9/10 mt-4 text-center justify-center mx-auto">
+      <div className="overflow-x-auto mx-4 sm:mx-8 lg:mx-auto mt-4 max-w-full lg:w-9/10">
+      <table className="border-collapse border border-gray-500 w-full min-w-max text-center">
         <thead className="bg-blue-300"> 
           <tr>
-            <th className="border border-gray-300 px-4 py-2">Date</th>
-            <th className="border border-gray-300 px-4 py-2">Message</th>
-            <th className="border border-gray-300 px-4 py-2">Origine</th>
-            <th className="border border-gray-300 px-4 py-2">Etat</th>
-            <th className="border border-gray-300 px-4 py-2">Criticité</th>
+            <th className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">Date</th>
+            <th className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">Message</th>
+            <th className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">Origine</th>
+            <th className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">Etat</th>
+            <th className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">Criticité</th>
           </tr>
         </thead>
         <tbody>
           {paginatedData.map((entry, index) => (
             <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}>
-              <td className="border border-gray-300 px-4 py-2">{entry.timestamp}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.message}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.origin.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.state.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.criticity.name}</td>
+              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base whitespace-nowrap">{entry.timestamp}</td>
+              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.message}</td>
+              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.origin.name}</td>
+              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.state.name}</td>
+              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.criticity.name}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 }

@@ -53,9 +53,9 @@ const BannerManager: React.FC<BannerManagerProps> = ({
     };
 
     return (
-        <div className="w-1/2 flex flex-col items-center">
+        <div className="w-full lg:w-1/2 flex flex-col items-center">
             <div className="inline-flex items-center space-x-3 mb-2">
-                <span className="font-semibold text-lg">
+                <span className="font-semibold text-base sm:text-lg">
                     {title}
                 </span>
                 <label className="switch">

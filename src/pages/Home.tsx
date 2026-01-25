@@ -168,7 +168,7 @@ const Home: React.FC = () => {
     return (
         <>
             <Header />
-            <div className="flex pt-4 w-1/1 flex-row space-x-4 px-4">
+            <div className="flex pt-4 w-full flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 px-2 sm:px-4">
                 <BannerManager
                     title="Valeurs M1"
                     values={valuesM1}
@@ -184,7 +184,7 @@ const Home: React.FC = () => {
                     onStateChange={handleM3StateChange}
                 />
             </div>
-            { (isCheckedM1 || isCheckedM3) && <button onClick={handleSubmit} className="fixed bottom-8 right-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
+            { (isCheckedM1 || isCheckedM3) && <button onClick={handleSubmit} className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 px-4 py-2 sm:px-6 sm:py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition shadow-lg z-50">
                 Envoyer
             </button>}
             <EventsTable events={events} />
