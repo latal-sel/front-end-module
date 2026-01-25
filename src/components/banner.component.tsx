@@ -35,6 +35,12 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
         setIsChecked(isEnabled);
     }, [isEnabled]);
 
+    if (value.type.includes("INT") || value.type.includes("FLOAT") || value.type.includes("QUALITY")) {
+        value.type = "number";
+    } else {
+        value.type = "text";
+    }
+
     return (
         <div className="banner mt-1" style={{backgroundColor: getBackgroundColor(value.type)}}>
             <div className="banner-name font-semibold text-lg">
@@ -46,7 +52,7 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
             <div className="banner-value font-mono text-xl">
                 {isChecked && isEnabled ? (
                     <input 
-                        type="number" 
+                        type={value.type}
                         className="border border-solid border-black text-right" 
                         defaultValue={value.val}
                         onChange={(e) => onValueChange?.(e.target.value)}
