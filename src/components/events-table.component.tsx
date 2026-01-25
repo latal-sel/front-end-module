@@ -22,7 +22,7 @@ const EventsTable: React.FC<EventsTableProps> = ({ events }) => {
                         <td className="border border-gray-300 px-4 py-2">{new Date(event.timestamp).toLocaleString()}</td>
                         <td className="border border-gray-300 px-4 py-2">{event.origin.name}</td>
                         <td className="border border-gray-300 px-4 py-2">{event.message}</td>
-                        <td className="border border-gray-300 px-4 py-2">{event.criticity}</td>
+                        <td className="border border-gray-300 px-4 py-2">{event.criticity.name}</td>
                     </tr>
                 ))}
             </tbody>

@@ -1,4 +1,4 @@
-export interface EventType {
+export interface Criticity {
     id: number;
     name: string;
 }

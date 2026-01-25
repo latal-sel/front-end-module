@@ -15,7 +15,7 @@ const filters: FilterConfig[] = [
   { label: 'Message', key: 'message' },
   { label: 'Origine', key: 'origin' },
   { label: 'Etat', key: 'state' },
-  { label: 'Type', key: 'eventType' }
+  { label: 'Criticité', key: 'criticity' }
 ];
 
 export default function History() {
@@ -109,7 +109,7 @@ export default function History() {
             <th className="border border-gray-300 px-4 py-2">Message</th>
             <th className="border border-gray-300 px-4 py-2">Origine</th>
             <th className="border border-gray-300 px-4 py-2">Etat</th>
-            <th className="border border-gray-300 px-4 py-2">Type</th>
+            <th className="border border-gray-300 px-4 py-2">Criticité</th>
           </tr>
         </thead>
         <tbody>
@@ -119,7 +119,7 @@ export default function History() {
               <td className="border border-gray-300 px-4 py-2">{entry.message}</td>
               <td className="border border-gray-300 px-4 py-2">{entry.origin.name}</td>
               <td className="border border-gray-300 px-4 py-2">{entry.state.name}</td>
-              <td className="border border-gray-300 px-4 py-2">{entry.eventType.name}</td>
+              <td className="border border-gray-300 px-4 py-2">{entry.criticity.name}</td>
             </tr>
           ))}
         </tbody>

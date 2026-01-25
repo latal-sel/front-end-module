@@ -1,4 +1,4 @@
-import type { EventType } from "./event-type";
+import type { Criticity } from "./criticity";
 import type { Origin } from "./origin";
 import type { State } from "./state";
 
@@ -8,5 +8,5 @@ export class Event {
     origin: Origin;
     eventType: EventType;
     state: State;
-    criticity: string;
+    criticity: Criticity;
 }

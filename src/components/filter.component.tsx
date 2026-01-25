@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchEventTypes } from "../api/types";
+import { fetchCriticities } from "../api/criticity";
 import { fetchOrigins } from "../api/origin";
 import { fetchStates } from "../api/states";
 
@@ -13,15 +13,15 @@ const FilterComponent: React.FC<filterProps> = (props) => {
   const { type, value, filterOnChange } = props;
   const [origins, setOrigins] = useState<any[]>([]);
   const [states, setStates] = useState<any[]>([]);
-  const [eventTypes, setEventTypes] = useState<any[]>([]);
+  const [criticities, setCriticities] = useState<any[]>([]);
 
   useEffect(() => {
     if (type === 'Origine') {
       fetchOrigins().then(setOrigins);
     } else if (type === 'Etat') {
       fetchStates().then(setStates);
-    } else if (type === 'Type') {
-      fetchEventTypes().then(setEventTypes);
+    } else if (type === 'Criticité') {
+      fetchCriticities().then(setCriticities);
     }
   }, [type]);
 
@@ -61,13 +61,13 @@ const FilterComponent: React.FC<filterProps> = (props) => {
           </select>
         </div>
       )}
-      {type === 'Type' && (
+      {type === 'Criticité' && (
         <div className="w-1/10 h-1/10 fixed bg-white border border-gray-300 rounded-md p-2 mt-2">
           <h2>Filtre {type}</h2>
           <select value={value} onChange={(e) => filterOnChange && filterOnChange(e.target.value)} className="w-full border border-gray-300 rounded-md p-2">
             <option value=""></option>
-            {eventTypes.map(eventType => (
-              <option key={eventType.id} value={eventType.name}>{eventType.name}</option>
+            {criticities.map(criticity => (
+              <option key={criticity.id} value={criticity.name}>{criticity.name}</option>
             ))}
           </select>
         </div>
