@@ -25,11 +25,19 @@ const Home: React.FC = () => {
     const handleM1StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
         setModifiedValuesM1(modifiedValues);
         setToSimulateM1(toSimulate);
+
+        if(!isCheckedM1) {
+            handleSubmit();
+        }
     };
 
     const handleM3StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
         setModifiedValuesM3(modifiedValues);
         setToSimulateM3(toSimulate);
+
+        if(!isCheckedM3) {
+            handleSubmit();
+        }
     };
 
     const processReceivedData = (rawDataList: Value[]) => {
@@ -121,6 +129,8 @@ const Home: React.FC = () => {
             const shouldSimulate = isCheckedM1 && (toSimulateM1[value.iec] !== undefined 
                 ? toSimulateM1[value.iec] 
                 : true);
+
+            insertValueIntoArray(value, setValuesM1);
             
             simulationOrders.push({
                 to_simulate: shouldSimulate,
@@ -136,6 +146,8 @@ const Home: React.FC = () => {
             const shouldSimulate = isCheckedM3 && (toSimulateM3[value.iec] !== undefined 
                 ? toSimulateM3[value.iec] 
                 : true);
+
+            insertValueIntoArray(value, setValuesM3);
             
             simulationOrders.push({
                 to_simulate: shouldSimulate,
