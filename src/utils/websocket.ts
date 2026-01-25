@@ -29,9 +29,9 @@ class WebSocketClient {
         this.socket?.emit(topic, payload);
     }
 
-    onValue(topic: string, callback: (data: any) => void) {
+    onValue(topic: string, callback: (data: unknown) => void) {
         if (this.socket) {
-            this.socket.on(topic, (data: any) => {
+            this.socket.on(topic, (data: unknown) => {
                 console.log(`Received on ${topic}:`, data);
                 const parsed = typeof data === 'string' ? JSON.parse(data) : data;
                 callback(parsed);
@@ -47,7 +47,7 @@ class WebSocketClient {
         }
     }
 
-    emit(topic: string, data: any) {
+    emit(topic: string, data: unknown) {
         if (this.socket) {
             this.socket.emit(topic, data);
         } else {
