@@ -131,6 +131,7 @@ const Home: React.FC = () => {
                 ? toSimulateM1[value.iec] 
                 : true);
 
+            value.val = String(currentValue);
             insertValueIntoArray(value, setValuesM1);
             
             simulationOrders.push({
@@ -147,7 +148,8 @@ const Home: React.FC = () => {
             const shouldSimulate = isCheckedM3 && (toSimulateM3[value.iec] !== undefined 
                 ? toSimulateM3[value.iec] 
                 : true);
-
+            
+            value.val = String(currentValue);
             insertValueIntoArray(value, setValuesM3);
             
             simulationOrders.push({
