@@ -58,7 +58,7 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
                 {value.unit}
             </div>
             <div className="banner-simulation">
-                <label className={`switch ${!isEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <label className={`switch ${!isEnabled ? 'opacity-50 cursor-not-allowed z-10' : ''}`}>
                     <input 
                         type="checkbox"
                         checked={isChecked}

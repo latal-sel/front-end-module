@@ -13,7 +13,7 @@ export default function RestartComponent({ onRestartClick }: restartProps) {
     }
 
     return (
-        <div className="w-11/12 sm:w-8/12 md:w-6/12 lg:w-4/12 h-auto fixed bg-white border border-gray-300 rounded-md p-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg">
+        <div className="z-50 w-11/12 sm:w-8/12 md:w-6/12 lg:w-4/12 h-auto fixed bg-white border border-gray-300 rounded-md p-4 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 shadow-lg">
             <div className="flex justify-between w-full">
                 <h1 className="text-lg font-semibold">Êtes-vous sûr de vouloir redémarrer ?</h1>
                 <img className="flex justify-end w-6 h-6 cursor-pointer" src={cross} onClick={onRestartClick} alt="Close" />
