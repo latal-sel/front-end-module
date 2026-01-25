@@ -122,7 +122,7 @@ export default function History() {
               <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.message}</td>
               <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.origin.name}</td>
               <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.state.name}</td>
-              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.criticity.name}</td>
+              <td className="border border-gray-300 px-2 sm:px-4 py-2 text-xs sm:text-sm lg:text-base">{entry.criticity.value}</td>
             </tr>
           ))}
         </tbody>

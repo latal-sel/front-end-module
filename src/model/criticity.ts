@@ -1,4 +1,4 @@
 export interface Criticity {
     id: number;
-    name: string;
+    value: string;
 }
