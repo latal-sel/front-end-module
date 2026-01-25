@@ -37,7 +37,7 @@ const Header: React.FC = () => {
                     <img src={logo} alt="Logo" className="h-8 w-18 cursor-pointer" onClick={() => navigate("/")} />
                 </div>
                 <nav className="nav space-x-4">
-                    <Link to="#" className="bg-gray-200 p-2 rounded-md" onClick={toggleCIDUpload}>Télécharger CID</Link>
+                    <Link to="#" className="bg-gray-200 p-2 rounded-md" onClick={toggleCIDUpload}>Téléverser CID</Link>
                     <Link to="/" className="bg-gray-200 p-2 rounded-md">Supervision</Link>
                     <Link to="#" className="bg-gray-200 p-2 rounded-md" onClick={toggleNetworkConfig}>Configuration réseau</Link>
                     <Link to="/history" className="bg-gray-200 p-2 rounded-md">Historique</Link>
