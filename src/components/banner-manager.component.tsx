@@ -23,8 +23,8 @@ const BannerManager: React.FC<BannerManagerProps> = ({
     useEffect(() => {
         const newModifiedValues: Record<string, string> = {};
         values.forEach(value => {
-            if (!(value.iec in modifiedValues)) {
-                newModifiedValues[value.iec] = value.val!.toString();
+            if (!(value.iec in modifiedValues) && value.val !== undefined) {
+                newModifiedValues[value.iec] = value.val!;
             }
         });
         if (Object.keys(newModifiedValues).length > 0) {
