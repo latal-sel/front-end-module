@@ -15,7 +15,6 @@ export default function NetworkConfigComponent({ onConfigClick }: networkConfigP
     const [allNetworkConfig, setAllNetworkConfig] = React.useState<AllNetworkConfig>({
         m1: { ipAddress: "", port: "", gateway: "" },
         m3: { ipAddress: "", port: "", gateway: "" },
-        automate: { ipAddress: "", port: "", gateway: ""}
     });
 
     useEffect(() => {
@@ -27,7 +26,7 @@ export default function NetworkConfigComponent({ onConfigClick }: networkConfigP
         
     }, []);
 
-    function handleInputChange(machine: "m1" | "m3" | "automate", field: "ipAddress" | "port" | "gateway", value: string) {
+    function handleInputChange(machine: "m1" | "m3", field: "ipAddress" | "port" | "gateway", value: string) {
         setAllNetworkConfig(prevState => ({
             ...prevState,
             [machine]: {
@@ -77,21 +76,6 @@ export default function NetworkConfigComponent({ onConfigClick }: networkConfigP
                         <div>
                             <span>Passerelle</span>
                             <input type="text" value={allNetworkConfig.m3.gateway} placeholder="Ecrire ici..." onChange={(event) => {handleInputChange("m3", "gateway", event.currentTarget.value)}}/>
-                        </div>
-                    </div>
-                    <div className="network-config-item">
-                        <label>Configuration IP Automate</label>
-                        <div>
-                            <span>Adresse IP</span>
-                            <input type="text" value={allNetworkConfig.automate.ipAddress} placeholder="Ecrire ici..." onChange={(event) => {handleInputChange("automate", "ipAddress", event.currentTarget.value)}}/>
-                        </div>
-                        <div>
-                            <span>Port</span>
-                            <input type="text" value={allNetworkConfig.automate.port} placeholder="Ecrire ici..." onChange={(event) => {handleInputChange("automate", "port", event.currentTarget.value)}}/>
-                        </div>
-                        <div>
-                            <span>Passerelle</span>
-                            <input type="text" value={allNetworkConfig.automate.gateway} placeholder="Ecrire ici..." onChange={(event) => {handleInputChange("automate", "gateway", event.currentTarget.value)}}/>
                         </div>
                     </div>
                 </div>
