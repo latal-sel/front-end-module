@@ -1,7 +1,7 @@
 export class Value {
     type: string;
     iec: string;
-    val?: number;
+    val?: string;
     unit: string;
     sim: boolean;
     origin : string;
