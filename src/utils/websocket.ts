@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import type { Event } from "../model/event";
+import type { Value } from "../model/value";
 
 class WebSocketClient {
     private socket: Socket | null = null;
@@ -29,9 +30,9 @@ class WebSocketClient {
         this.socket?.emit(topic, payload);
     }
 
-    onValue(topic: string, callback: (data: unknown) => void) {
+    onValue(topic: string, callback: (data: Value) => void) {
         if (this.socket) {
-            this.socket.on(topic, (data: unknown) => {
+            this.socket.on(topic, (data: Value) => {
                 console.log(`Received on ${topic}:`, data);
                 const parsed = typeof data === 'string' ? JSON.parse(data) : data;
                 callback(parsed);
@@ -41,8 +42,8 @@ class WebSocketClient {
 
     onEvent(topic: string, callback: (data: Event) => void) {
         if (this.socket) {
-            this.socket.on(topic, (data: string) => {
-                callback(JSON.parse(data));
+            this.socket.on(topic, (data: Event) => {
+                callback(data);
             });
         }
     }

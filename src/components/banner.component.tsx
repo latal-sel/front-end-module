@@ -48,11 +48,11 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
                     <input 
                         type="number" 
                         className="border border-solid border-black text-right" 
-                        defaultValue={value.value}
+                        defaultValue={value.val}
                         onChange={(e) => onValueChange?.(e.target.value)}
                         onBlur={(e) => onValueChange?.(e.target.value)}
                     />
-                ) : value.value}
+                ) : value.val}
             </div>
             <div className="banner-unit text-sm font-normal">
                 {value.unit}

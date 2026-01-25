@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-import BannerComponent from "../components/banner.component";
+import BannerManager from "../components/banner-manager.component";
+import EventsTable from "../components/events-table.component";
 import Header from "../components/header.component";
 
 import { Value } from "../model/value.d";
 import { SimulationOrder } from "../model/simulation-order.d";
 import { sendSimulationData } from "../api/simulation";
 import { Event } from "../model/event.d";
-import paths from '../utils/paths.json';
 
 import { websocketClient } from "../utils/websocket";
 
@@ -22,39 +22,30 @@ const Home: React.FC = () => {
     const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
     const [events, setEvents] = useState<Event[]>([]);
 
-    const processReceivedData = (rawDataList: any[]) => {
+    const handleM1StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
+        setModifiedValuesM1(modifiedValues);
+        setToSimulateM1(toSimulate);
+    };
+
+    const handleM3StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
+        setModifiedValuesM3(modifiedValues);
+        setToSimulateM3(toSimulate);
+    };
+
+    const processReceivedData = (rawDataList: Value[]) => {
         const newM1: Value[] = [];
         const newM3: Value[] = [];
-        const newM3Modified: Record<string, string> = {};
-        const pathTyped: any = paths;
 
         rawDataList.forEach((item) => {
-            const val: Value = {
-                name: item.iec,
-                value: item.val === "" ? 0 : Number(item.val),
-                unit: item.unit,
-                isSimulated: item.sim,
-                type: "",
-                module: "",
-                displayName: ""
-            };
-
-            if (val.name in pathTyped) {
-                val.module = (paths as any)[val.name][1];
-                val.displayName = (paths as any)[val.name][0];
-
-                if (val.module === "M1") {
-                    newM1.push(val);
-                } else if (val.module === "M3") {
-                    newM3.push(val);
-                    newM3Modified[val.name] = val.value.toString();
-                }
+            if (item.origin === "M1") {
+                newM1.push(item);
+            } else if (item.origin === "M3") {
+                newM3.push(item);
             }
         });
 
         setValuesM1(newM1);
         setValuesM3(newM3);
-        setModifiedValuesM3((prev) => ({ ...prev, ...newM3Modified }));
     };
 
     useEffect(() => {
@@ -78,7 +69,7 @@ const Home: React.FC = () => {
         setValues: React.Dispatch<React.SetStateAction<Value[]>>
     ) => {
         setValues((prevValues) => {
-            const index = prevValues.findIndex((v) => v.name === valueToInsert.name);
+            const index = prevValues.findIndex((v) => v.iec === valueToInsert.iec);
             if (index !== -1) {
                 const newArray = [...prevValues];
                 newArray[index] = valueToInsert;
@@ -91,50 +82,24 @@ const Home: React.FC = () => {
     useEffect(() => {
         websocketClient.onValue("ihm_log", (data: Value) => {
             if (data instanceof Event) return;
-            if (!(data.name in paths)) return;
-            data.module = paths[data.name as keyof typeof paths][1];
-            data.displayName = paths[data.name as keyof typeof paths][0];
             
-            if (data.module === "M1")
+            if (data.origin === "M1")
                 insertValueIntoArray(data, setValuesM1);
-            else if (data.module === "M3") {
+            else if (data.origin === "M3") {
                 insertValueIntoArray(data, setValuesM3);
-                setModifiedValuesM3(prev => ({
-                    ...prev,
-                    [data.name]: data.value.toString()
-                }));
             }
         });
     }, []);
 
     useEffect(() => {
-                websocketClient.onValue("iec-get-all-values-response", (data: Value) => {
-                const valuesArray: Value[] = (data as unknown as any).data.map((item: any) => {
-                const value: Value = {
-                    name: item.iec,
-                    value: item.val === "" ? 0 : Number(item.val),
-                    unit: item.unit,
-                    isSimulated: item.sim,
-                    type: "",
-                    module: "",
-                    displayName: ""
-                };
-                if (value.name in paths) {
-                    value.module = paths[value.name as keyof typeof paths][1];
-                    value.displayName = paths[value.name as keyof typeof paths][0];
-                }
-                return value;
-            });
+        websocketClient.onValue("iec-get-all-values-response", (data: Value) => {
+            const valuesArray: Value[] = Array.isArray(data) ? data : [];
 
             valuesArray.forEach((value) => {
-                if (value.module === "M1")
+                if (value.origin === "M1")
                     insertValueIntoArray(value, setValuesM1);
-                else if (value.module === "M3") {
+                else if (value.origin === "M3") {
                     insertValueIntoArray(value, setValuesM3);
-                    setModifiedValuesM3(prev => ({
-                        ...prev,
-                        [value.name]: value.value.toString()
-                    }));
                 }
             });
         });
@@ -144,65 +109,37 @@ const Home: React.FC = () => {
         websocketClient.onEvent("ihm_event", (data: Event) => {
             setEvents((prevEvents) => [...prevEvents, data]);
         });
-    }, [events]);
-
-    const handleValueChangeM1 = (valueName: string, newValue: string) => {
-        setModifiedValuesM1(prev => ({
-            ...prev,
-            [valueName]: newValue
-        }));
-    };
-
-    const handleValueChangeM3 = (valueName: string, newValue: string) => {
-        setModifiedValuesM3(prev => ({
-            ...prev,
-            [valueName]: newValue
-        }));
-    };
-
-    const handleSimulateChangeM1 = (valueName: string, shouldSimulate: boolean) => {
-        setToSimulateM1(prev => ({
-            ...prev,
-            [valueName]: shouldSimulate
-        }));
-    };
-
-    const handleSimulateChangeM3 = (valueName: string, shouldSimulate: boolean) => {
-        setToSimulateM3(prev => ({
-            ...prev,
-            [valueName]: shouldSimulate
-        }));
-    };
+    }, []);
 
     const handleSubmit = () => {
         const simulationOrders: SimulationOrder[] = [];
 
         valuesM1.forEach(value => {
-            const currentValue = modifiedValuesM1[value.name] !== undefined 
-                ? Number(modifiedValuesM1[value.name]) 
-                : Number(value.value);
-            const shouldSimulate = toSimulateM1[value.name] !== undefined 
-                ? toSimulateM1[value.name] 
-                : isCheckedM1;
+            const currentValue = modifiedValuesM1[value.iec] !== undefined 
+                ? Number(modifiedValuesM1[value.iec]) 
+                : Number(value.val);
+            const shouldSimulate = isCheckedM1 && (toSimulateM1[value.iec] !== undefined 
+                ? toSimulateM1[value.iec] 
+                : true);
             
             simulationOrders.push({
                 to_simulate: shouldSimulate,
-                iec_path: value.name,
+                iec_path: value.iec,
                 value: currentValue
             });
         });
 
         valuesM3.forEach(value => {
-            const currentValue = modifiedValuesM3[value.name] !== undefined 
-                ? Number(modifiedValuesM3[value.name]) 
-                : Number(value.value);
-            const shouldSimulate = toSimulateM3[value.name] !== undefined 
-                ? toSimulateM3[value.name] 
-                : isCheckedM3;
+            const currentValue = modifiedValuesM3[value.iec] !== undefined 
+                ? Number(modifiedValuesM3[value.iec]) 
+                : Number(value.val);
+            const shouldSimulate = isCheckedM3 && (toSimulateM3[value.iec] !== undefined 
+                ? toSimulateM3[value.iec] 
+                : true);
             
             simulationOrders.push({
                 to_simulate: shouldSimulate,
-                iec_path: value.name,
+                iec_path: value.iec,
                 value: currentValue
             });
         });
@@ -220,88 +157,25 @@ const Home: React.FC = () => {
         <>
             <Header />
             <div className="flex pt-4 w-1/1 flex-row space-x-4 px-4">
-                <div className="w-1/2 flex flex-col items-center">
-                    <div className="inline-flex items-center space-x-3 mb-2">
-                        <span className="font-semibold text-lg">
-                            Valeurs M1
-                        </span>
-                        <label className="switch">
-                            <input
-                                type="checkbox"
-                                checked={isCheckedM1}
-                                onChange={() => setIsCheckedM1(!isCheckedM1)}
-                            />
-                            <span className="slider round"></span>
-                        </label>
-                    </div>
-                    {valuesM1.length === 0 && (
-                        <span className="text-gray-500 mt-4">
-                            Aucune valeur reçue du module M1.
-                        </span>
-                    )}
-                    {valuesM1.map((value, index) => (
-                        <BannerComponent
-                            key={index}
-                            value={value}
-                            isEnabled={isCheckedM1}
-                            onValueChange={(newValue) => handleValueChangeM1(value.name, newValue)}
-                            onSimulateChange={(shouldSimulate) => handleSimulateChangeM1(value.name, shouldSimulate)}
-                        />
-                    ))}
-                </div>
-                <div className="w-1/2 flex flex-col items-center">
-                    <div className="inline-flex items-center space-x-3 mb-2">
-                        <span className="font-semibold text-lg">
-                            Valeurs M3
-                        </span>
-                        <label className="switch">
-                            <input
-                                type="checkbox"
-                                checked={isCheckedM3}
-                                onChange={() => setIsCheckedM3(!isCheckedM3)}
-                            />
-                            <span className="slider round"></span>
-                        </label>
-                    </div>
-                    {valuesM3.length === 0 && (
-                        <span className="text-gray-500 mt-4">
-                            Aucune valeur reçue du module M3.
-                        </span>
-                    )}
-                    {valuesM3.map((value, index) => (
-                        <BannerComponent
-                            key={index}
-                            value={value}
-                            isEnabled={isCheckedM3}
-                            onValueChange={(newValue) => handleValueChangeM3(value.name, newValue)}
-                            onSimulateChange={(shouldSimulate) => handleSimulateChangeM3(value.name, shouldSimulate)}
-                        />
-                    ))}
-                </div>
+                <BannerManager
+                    title="Valeurs M1"
+                    values={valuesM1}
+                    isChecked={isCheckedM1}
+                    onToggle={() => setIsCheckedM1(!isCheckedM1)}
+                    onStateChange={handleM1StateChange}
+                />
+                <BannerManager
+                    title="Valeurs M3"
+                    values={valuesM3}
+                    isChecked={isCheckedM3}
+                    onToggle={() => setIsCheckedM3(!isCheckedM3)}
+                    onStateChange={handleM3StateChange}
+                />
             </div>
             { (isCheckedM1 || isCheckedM3) && <button onClick={handleSubmit} className="fixed bottom-8 right-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">
                 Envoyer
             </button>}
-            <table className="border-collapse border border-gray-500 w-9/10 mt-3 text-center justify-center mx-auto">
-                <thead className="bg-blue-300"> 
-                    <tr>
-                        <th className="border border-gray-300 px-4 py-1">Timestamp</th>
-                        <th className="border border-gray-300 px-4 py-1">Origine</th>
-                        <th className="border border-gray-300 px-4 py-1">Message</th>
-                        <th className="border border-gray-300 px-4 py-1">Criticité</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {events.slice(-3).reverse().map((event, index) => (
-                        <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-100"}>
-                            <td className="border border-gray-300 px-4 py-2">{new Date(event.timestamp).toLocaleString()}</td>
-                            <td className="border border-gray-300 px-4 py-2">{event.origin.name}</td>
-                            <td className="border border-gray-300 px-4 py-2">{event.message}</td>
-                            <td className="border border-gray-300 px-4 py-2">{event.criticity}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <EventsTable events={events} />
         </>
     );
 };
