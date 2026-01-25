@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import type { Event } from "../model/event";
+import type { WebsocketEvent } from "../model/websocketEvent";
 import type { Value } from "../model/value";
 
 class WebSocketClient {
@@ -40,9 +40,9 @@ class WebSocketClient {
         }
     }
 
-    onEvent(topic: string, callback: (data: Event) => void) {
+    onEvent(topic: string, callback: (data: WebsocketEvent) => void) {
         if (this.socket) {
-            this.socket.on(topic, (data: Event) => {
+            this.socket.on(topic, (data: WebsocketEvent) => {
                 callback(data);
             });
         }

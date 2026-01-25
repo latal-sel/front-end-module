@@ -10,6 +10,7 @@ import { sendSimulationData } from "../api/simulation";
 import { Event } from "../model/event.d";
 
 import { websocketClient } from "../utils/websocket";
+import type { WebsocketEvent } from "../model/websocketEvent";
 
 const Home: React.FC = () => {
     const [valuesM1, setValuesM1] = useState<Value[]>([]);
@@ -20,7 +21,7 @@ const Home: React.FC = () => {
     const [modifiedValuesM3, setModifiedValuesM3] = useState<Record<string, string>>({});
     const [toSimulateM1, setToSimulateM1] = useState<Record<string, boolean>>({});
     const [toSimulateM3, setToSimulateM3] = useState<Record<string, boolean>>({});
-    const [events, setEvents] = useState<Event[]>([]);
+    const [events, setEvents] = useState<WebsocketEvent[]>([]);
 
     const handleM1StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
         setModifiedValuesM1(modifiedValues);
@@ -114,7 +115,7 @@ const Home: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        websocketClient.onEvent("ihm_event", (data: Event) => {
+        websocketClient.onEvent("ihm_event", (data: WebsocketEvent) => {
             setEvents((prevEvents) => [...prevEvents, data]);
         });
     }, []);
