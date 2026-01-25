@@ -44,7 +44,7 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
     return (
         <div className="banner mt-1" style={{backgroundColor: getBackgroundColor(value.type)}}>
             <div className="banner-name font-semibold text-lg">
-                {value.displayName}
+                {value.display_name}
             </div>
             {getIconPath(value.type) && 
                 <img src={getIconPath(value.type)} alt={value.type} className="icon-image"/>

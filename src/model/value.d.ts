@@ -5,5 +5,5 @@ export class Value {
     unit: string;
     sim: boolean;
     origin : string;
-    displayName : string;
+    display_name : string;
 }
