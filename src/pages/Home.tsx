@@ -62,7 +62,12 @@ const Home: React.FC = () => {
     };
 
     const handleM3StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
-        
+        setModifiedValuesM3(modifiedValues);
+        setToSimulateM3(toSimulate);
+
+        if(!isCheckedM3) {
+            handleSubmit();
+        }       
     };
 
     const processReceivedData = (rawDataList: Value[]) => {
