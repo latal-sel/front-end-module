@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import NetworkConfigComponent from "./network-config.component";
 import RestartComponent from "./restart.component";
 import { Link } from "react-router-dom";
+import CIDUploadComponent from "./cid-upload.component";
 
 
 const Header: React.FC = () => {
     const [showNetworkConfig, setShowNetworkConfig] = React.useState(false);
     const [showRestart, setShowRestart] = React.useState(false);
+    const [showCIDUpload, setShowCIDUpload] = React.useState(false);
     
     const navigate = useNavigate();
     
@@ -22,6 +24,11 @@ const Header: React.FC = () => {
         setShowRestart(!showRestart);
     };
 
+    const toggleCIDUpload = (e?: React.MouseEvent<HTMLAnchorElement>) => {
+        e?.preventDefault();
+        setShowCIDUpload(!showCIDUpload);
+    };
+
     return (
         <>
         <header className="header shadow-md h-16">
@@ -30,7 +37,8 @@ const Header: React.FC = () => {
                     <img src={logo} alt="Logo" className="h-8 w-18 cursor-pointer" onClick={() => navigate("/")} />
                 </div>
                 <nav className="nav space-x-4">
-                     <Link to="/" className="bg-gray-200 p-2 rounded-md">Supervision</Link>
+                    <Link to="#" className="bg-gray-200 p-2 rounded-md" onClick={toggleCIDUpload}>Télécharger CID</Link>
+                    <Link to="/" className="bg-gray-200 p-2 rounded-md">Supervision</Link>
                     <Link to="#" className="bg-gray-200 p-2 rounded-md" onClick={toggleNetworkConfig}>Configuration réseau</Link>
                     <Link to="/history" className="bg-gray-200 p-2 rounded-md">Historique</Link>
                     <Link to="#" className="bg-gray-200 p-2 rounded-md" onClick={toggleRestart}>Redémarrer</Link>
@@ -38,7 +46,8 @@ const Header: React.FC = () => {
             </div>
         </header>
         {showNetworkConfig && <NetworkConfigComponent onConfigClick={toggleNetworkConfig} />}
-        {showRestart && <RestartComponent onRestartClick={toggleRestart} />}  
+        {showRestart && <RestartComponent onRestartClick={toggleRestart} />} 
+        {showCIDUpload && <CIDUploadComponent onRestartClick={toggleCIDUpload} />}
         </>
     );
 }
