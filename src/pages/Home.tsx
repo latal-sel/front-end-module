@@ -32,13 +32,37 @@ const Home: React.FC = () => {
         }
     };
 
-    const handleM3StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
-        setModifiedValuesM3(modifiedValues);
-        setToSimulateM3(toSimulate);
-
-        if(!isCheckedM3) {
-            handleSubmit();
+    const handleM1Toggle = async () => {
+        if(!isCheckedM1) {
+            for (const value of valuesM1) {
+                const order: SimulationOrder = {
+                    to_simulate: false,
+                    iec_path: value.iec,
+                    value: 0
+                };
+                await sendSimulationData(order);
+            }
         }
+
+        setIsCheckedM1(!isCheckedM1);
+    };
+
+    const handleM3Toggle = async () => {
+        if(!isCheckedM3) {
+            for (const value of valuesM3) {
+                const order: SimulationOrder = {
+                    to_simulate: false,
+                    iec_path: value.iec,
+                    value: 0
+                };
+                await sendSimulationData(order);
+            }
+        }
+        setIsCheckedM3(!isCheckedM3);
+    };
+
+    const handleM3StateChange = (modifiedValues: Record<string, string>, toSimulate: Record<string, boolean>) => {
+        
     };
 
     const processReceivedData = (rawDataList: Value[]) => {
@@ -176,14 +200,14 @@ const Home: React.FC = () => {
                     title="Valeurs M1"
                     values={valuesM1}
                     isChecked={isCheckedM1}
-                    onToggle={() => setIsCheckedM1(!isCheckedM1)}
+                    onToggle={handleM1Toggle}
                     onStateChange={handleM1StateChange}
                 />
                 <BannerManager
                     title="Valeurs M3"
                     values={valuesM3}
                     isChecked={isCheckedM3}
-                    onToggle={() => setIsCheckedM3(!isCheckedM3)}
+                    onToggle={handleM3Toggle}
                     onStateChange={handleM3StateChange}
                 />
             </div>
