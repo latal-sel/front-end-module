@@ -33,8 +33,9 @@ const Home: React.FC = () => {
     };
 
     const handleM1Toggle = async () => {
-        if(!isCheckedM1) {
+        if(isCheckedM1) {
             for (const value of valuesM1) {
+                console.log("Sending reset for M1 value:", value);
                 const order: SimulationOrder = {
                     to_simulate: false,
                     iec_path: value.iec,
@@ -43,13 +44,13 @@ const Home: React.FC = () => {
                 await sendSimulationData(order);
             }
         }
-
         setIsCheckedM1(!isCheckedM1);
     };
 
     const handleM3Toggle = async () => {
-        if(!isCheckedM3) {
+        if(isCheckedM3) {
             for (const value of valuesM3) {
+                console.log("Sending reset for M3 value:", value);
                 const order: SimulationOrder = {
                     to_simulate: false,
                     iec_path: value.iec,
