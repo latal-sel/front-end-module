@@ -8,7 +8,7 @@ class WebSocketClient {
     connect() {
         if (!this.socket) {
             console.log("Connection...");
-            this.socket = io("http://localhost:3000", {
+            this.socket = io("http://192.168.200.1", {
                 path: "/socket.io/",
                 transports: ["websocket"]
             });
