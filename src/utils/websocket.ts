@@ -42,8 +42,9 @@ class WebSocketClient {
 
     onEvent(topic: string, callback: (data: WebsocketEvent) => void) {
         if (this.socket) {
-            this.socket.on(topic, (data: WebsocketEvent) => {
-                callback(data);
+            this.socket.on(topic, (data: string) => {
+                const EventObj: WebsocketEvent = JSON.parse(data);
+                callback(EventObj);
             });
         }
     }
