@@ -30,16 +30,19 @@ function getIconPath(type: string): string {
 
 export default function BannerComponent({value, isEnabled = true, onValueChange, onSimulateChange}: {value: Value, isEnabled?: boolean, onValueChange?: (newValue: string) => void, onSimulateChange?: (shouldSimulate: boolean) => void}) {
     const [isChecked, setIsChecked] = useState(isEnabled);
+    const [inputType, setInputType] = useState<string>("number");
 
     useEffect(() => {
         setIsChecked(isEnabled);
     }, [isEnabled]);
 
-    if (value.type.includes("INT") || value.type.includes("FLOAT") || value.type.includes("QUALITY")) {
-        value.type = "number";
-    } else {
-        value.type = "text";
-    }
+    useEffect(() => {
+        if (value.type.includes("STRING") || value.type.includes("text")) {
+            setInputType("text");
+        } else {
+            setInputType("number");
+        }
+    }, [value.type]);
 
     return (
         <div className="banner mt-1" style={{backgroundColor: getBackgroundColor(value.type)}}>
@@ -52,7 +55,7 @@ export default function BannerComponent({value, isEnabled = true, onValueChange,
             <div className="banner-value font-mono text-base sm:text-lg lg:text-xl">
                 {isChecked && isEnabled ? (
                     <input 
-                        type={value.type}
+                        type={inputType}
                         className="border border-solid border-black text-right" 
                         defaultValue={value.val}
                         onChange={(e) => onValueChange?.(e.target.value)}
