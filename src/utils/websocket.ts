@@ -8,7 +8,7 @@ class WebSocketClient {
     connect() {
         if (!this.socket) {
             console.log("Connection...");
-            this.socket = io("http://192.168.200.1", {
+            this.socket = io(import.meta.env.VITE_WEBSOCKET_API ? `http://${import.meta.env.VITE_WEBSOCKET_API}` : "http://localhost", {
                 path: "/socket.io/",
                 transports: ["websocket"]
             });
