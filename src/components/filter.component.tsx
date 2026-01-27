@@ -67,7 +67,7 @@ const FilterComponent: React.FC<filterProps> = (props) => {
           <select value={value} onChange={(e) => filterOnChange && filterOnChange(e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm sm:text-base">
             <option value=""></option>
             {criticities.map(criticity => (
-              <option key={criticity.id} value={criticity.name}>{criticity.name}</option>
+              <option key={criticity.id} value={criticity.value}>{criticity.value}</option>
             ))}
           </select>
         </div>
